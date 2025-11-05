@@ -1,0 +1,25 @@
+digraph G {
+    orientation=LR;
+    rankdir=LR;
+    node [shape=rect, style="rounded,filled", fontsize=12];
+    node0 [fillcolor=lightblue, color=blue, penwidth=3, label="index: 0\nnext: 0\nvalue: 0\nprev: 140733073542688"];
+    node1 [fillcolor=lightcoral, color=green, penwidth=3, label="index: 1\nnext: 2\nvalue: -1\nprev: 140733073542688"];
+    node2 [fillcolor=lightcoral, color=black, penwidth=3, label="index: 2\nnext: 3\nvalue: -1\nprev: 140733073542688"];
+    node3 [fillcolor=lightcoral, color=black, penwidth=3, label="index: 3\nnext: 4\nvalue: -1\nprev: 140733073542688"];
+    node4 [fillcolor=lightcoral, color=black, penwidth=3, label="index: 4\nnext: 4294967295\nvalue: -1\nprev: 140733073542688"];
+    { rank=same; node0 -> node1 -> node2 -> node3 -> node4 [style=invis, weight=100]; }
+    node1 -> node2 [color=red, penwidth=3];
+    node2 -> node3 [color=red, penwidth=3];
+    node3 -> node4 [color=red, penwidth=3];
+    node1 -> node2 [color=gray, style=dotted];
+    node2 -> node3 [color=gray, style=dotted];
+    node3 -> node4 [color=gray, style=dotted];
+    null_elem [shape=ellipse, fillcolor=lightgray, style=filled, label="NULL"];
+    null_elem -> node0 [color=brown];
+    free_head [shape=ellipse, fillcolor=lightgray, style=filled, label="Free Head"];
+    free_head -> node1 [color=green];
+    list_head [shape=ellipse, fillcolor=lightblue, style=filled, label="List Head"];
+    list_head -> node0 [color=blue];
+    list_tail [shape=ellipse, fillcolor=orange, style=filled, label="List Tail"];
+    list_tail -> node0 [color=orange];
+}

@@ -1,0 +1,53 @@
+/*
+    int current = list->head;
+    while (current != -1 && current < (int)list->capacity && current != 0) {
+        int next = list->arr[current].next;
+        if(next != -1 && next < (int)list->capacity) {
+            fprintf(dot_file, "\tnode%d:f1 -> node%d [color=\"darkgreen\", weight=100, style=invis];\n", 
+                    next, current);
+        }
+        current = next;
+    }
+
+    current = list->free_head;
+    while (current != -1 && current < (int)list->capacity && current != 0) {
+        int next = list->arr[current].next;
+        if(next != -1 && next < (int)list->capacity) {
+            fprintf(dot_file, "\tnode%d:f1 -> node%d [color=\"red\", weight=100, style=invis];\n", 
+                    current, next);
+        } 
+        current = next;
+    }
+
+
+    current = list->head;
+    while (current != -1 && current < (int)list->capacity && current != 0) {
+        int next = list->arr[current].next;
+        if(next != -1 && next < (int)list->capacity) {
+            fprintf(dot_file, "\tnode%d:f2 -> node%d:f0 [color=\"darkgreen\", weight=2];\n", 
+                    current, next);
+        }
+        int prev = list->arr[current].prev;
+        if(prev != -1 && prev < (int)list->capacity) {
+            fprintf(dot_file, "\tnode%d:f0 -> node%d:f2 [color=\"darkgreen\", style=dashed];\n", 
+                    current, prev);
+        }
+        current = next;
+    }
+
+    current = list->free_head;
+    while (current != -1 && current < (int)list->capacity && current != 0) {
+        int next = list->arr[current].next;
+        if(next != -1 && next < (int)list->capacity) {
+            fprintf(dot_file, "\tnode%d:f2 -> node%d:f0 [color=\"red\", style=dashed];\n", 
+                    current, next);
+        } 
+        current = next;
+    }
+    */
+
+//обертка для insert прев
+//insert_back insert_begin
+//todo: логичекие элементы сверух
+//добавить легенду для цветов
+        bool is_constructed = false; 

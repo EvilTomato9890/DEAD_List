@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "vector": "cpp",
+        "cstdlib": "cpp",
+        "cmath": "cpp",
+        "functional": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "list": "cpp"
+    }
+}
