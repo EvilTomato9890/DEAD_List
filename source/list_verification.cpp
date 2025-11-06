@@ -419,8 +419,8 @@ static void emit_edges_prev(const list_t *list, char *bidir_next, char *bidir_pr
 static int run_dot_to_svg(const char *dot_path, const char *svg_path) {
     char cmd[512];
     snprintf(cmd, sizeof(cmd),
-             "dot -Tsvg -Gsize=%.3f,%.3f -Gratio=compress -Gmargin=0 \"%s\" -o \"%s\"",
-             max_w_in, max_h_in, dot_path, svg_path);
+             "dot -Tsvg \"%s\" -o \"%s\"",
+             dot_path, svg_path);
     return system(cmd) == 0;
 }
 
@@ -444,14 +444,16 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
 
     fprintf(html, "<pre>\n");
 
+    LOGGER_DEBUG("TEST");
     fprintf(html, "====================[ DUMP #%d ]====================\n", idx);
     fprintf(html, "Timestamp: %s\n", ts);
-    if (comment) {
+    if (comment ) {
         fprintf(html, "%s\n", comment);
     } else {
         fprintf(html, "(none)\n");
     }
     fprintf(html, "====================================================\n");
+    LOGGER_DEBUG("TEST");
 
     fprintf(html, "list ptr : %p\n",  list);
     fprintf(html, "arr  ptr : %p\n",  list ? list->arr      :  NULL);

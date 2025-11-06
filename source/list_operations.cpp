@@ -156,9 +156,6 @@ error_code list_dest(list_t* list) {
     HARD_ASSERT(list->arr != nullptr, "list->arr is nullptr");
     LOGGER_DEBUG("Destroying list");
     error_code error = ERROR_NO;
-    ON_DEBUG(
-        error |= list_verify(list, VER_INIT, DUMP_IMG, "Before list_dest");
-    )
 
     free(list->arr);
     list->arr = nullptr;
