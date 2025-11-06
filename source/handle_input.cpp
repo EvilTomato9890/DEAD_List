@@ -1,7 +1,7 @@
 #include "handle_input.h"
 #include "error_handler.h"
-#include "list_data.h"
 #include "logger.h"
+#include "list_info.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -51,7 +51,7 @@ error_code perform_auto_insert(list_t* list, int index, double value) {
 }
 
 error_code perform_manual_insert(list_t* list, int index, double value) {
-    int physical_idx = list_insert(list, index, value);
+    int physical_idx = list_insert_after(list, index, value);
     if (physical_idx == -1) {
         LOGGER_ERROR("Manual insert failed");
         return ERROR_INSERT_FAIL;
