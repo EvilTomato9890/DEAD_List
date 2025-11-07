@@ -26,17 +26,3 @@ $(BIN_DIR):
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)
 
-.PHONY: clean debug release vars
-
-# Добавьте в makefile
-check:
-	@echo "Checking files..."
-	@ls -la $(SRC_DIR)/
-	@echo "Object files:"
-	@ls -la $(BUILD_DIR)/ || echo "Build dir doesn't exist"
-	@echo "Binary info:"
-	@file $(TARGET) 2>/dev/null || echo "Target doesn't exist"
-
-run: $(TARGET)
-	@echo "Running $(TARGET)..."
-	./$(TARGET)

@@ -51,29 +51,29 @@ static error_code validate_main_chain(const list_t* list, size_t capacity, const
     error_code error = 0;
     if (!idx_ok(list->head, capacity)) return 0;
 
-    unsigned char* seen = (unsigned char*)calloc(capacity, 1);
+    char* seen = (char*)calloc(capacity, 1);
     if (!seen) { LOGGER_ERROR("alloc failed"); return ERROR_MEM_ALLOC; }
 
-    int cur = list->head;
+    int curr = list->head;
     size_t steps = 0;
-    while (idx_ok(cur, capacity) && cur > 0 && !seen[(size_t)cur]) {
-        seen[(size_t)cur] = 1;
-        int nxt = list->arr[(size_t)cur].next;
+    while (idx_ok(curr, capacity) && curr > 0 && !seen[(size_t)curr]) {
+        seen[(size_t)curr] = 1;
+        int next = list->arr[(size_t)curr].next;
 
-        if (idx_ok(nxt, capacity)) {
-            if (list->arr[(size_t)nxt].prev != cur) {
-                LOGGER_ERROR("mismatch prev for %d <- %d", nxt, cur);
+        if (idx_ok(next, capacity)) {
+            if (list->arr[(size_t)next].prev != curr) {
+                LOGGER_ERROR("mismatch prev for %d <- %d", next, curr);
                 *error_description = "mismatch in main chain";
                 error |= ERROR_INVALID_STRUCTURE;
             }
-        } else if (nxt != -1) {
-            LOGGER_ERROR("next node at %d -> %d not in chain", cur, nxt);
+        } else if (next != -1) {
+            LOGGER_ERROR("next node at %d -> %d not in chain", curr, next);
             *error_description = "next node not in main chain";
             error |= ERROR_INVALID_STRUCTURE;
             break;
         }
 
-        cur = nxt;
+        curr = next;
         if (++steps > capacity + 1) {
             LOGGER_ERROR("loop suspected in next-chain");
             error |= ERROR_INVALID_STRUCTURE;
@@ -88,22 +88,22 @@ static error_code validate_free_chain(const list_t* list, size_t capacity, const
     error_code error = 0;
     if (!idx_ok(list->free_head, capacity)) return 0;
 
-    unsigned char* seen = (unsigned char*)calloc(capacity, 1);
+    char* seen = (char*)calloc(capacity, 1);
     if (!seen) { LOGGER_ERROR("alloc failed (free)"); return ERROR_MEM_ALLOC; }
 
-    int f = list->free_head;
+    int curr = list->free_head;
     size_t steps = 0;
-    while (idx_ok(f, capacity) && !seen[(size_t)f]) {
-        seen[(size_t)f] = 1;
-        int fn = list->arr[(size_t)f].next;
+    while (idx_ok(curr, capacity) && !seen[(size_t)curr]) {
+        seen[(size_t)curr] = 1;
+        int next = list->arr[(size_t)curr].next;
 
-        if (fn != -1 && !idx_ok(fn, capacity)) {
-            LOGGER_ERROR("free next not in chain %d -> %d", f, fn);
+        if (next != -1 && !idx_ok(next, capacity)) {
+            LOGGER_ERROR("free next not in chain %d -> %d", curr, next);
             *error_description = "free next node not in chain";
             error |= ERROR_INVALID_STRUCTURE;
             break;
         }
-        f = fn;
+        curr = next;
         if (++steps > capacity + 1) {
             LOGGER_ERROR("loop suspected in free-chain");
             *error_description = "loop suspected in free-chain";
@@ -263,8 +263,8 @@ int dump_make_graphviz_svg(const list_t* list, const char* base_name) {
     free(bidir_prev);
 
     fprintf(file,
-        "  node_free [label=free_head,color=\"#d88\",shape=rectangle,style=\"filled,rounded\",fillcolor=\"#ffecec\"];\n");
-    fprintf(file, "  node_free -> node_%d [color=\"#d88\", style=dashed, constraint=false];\n", list->free_head);
+        "  node_free [label=free_head,color=\"#d88d88\",shape=rectangle,style=\"filled,rounded\",fillcolor=\"#ffecec\"];\n");
+    fprintf(file, "  node_free -> node_%d [color=\"#d88d88\", style=dashed, constraint=false];\n", list->free_head);
 
     fprintf(file, "}\n");
     fclose(file);
@@ -289,7 +289,7 @@ static void emit_nodes(const list_t *list, FILE *file) {
             fprintf(file,
                 "  node_%zu[shape=record,"
                 "label=\" ind: %zu | val: %g | { prev: %d | next: %d } \","
-                "style=\"filled,rounded\",color=\"#d88\",fillcolor=\"#ffecec\"];\n",
+                "style=\"filled,rounded\",color=\"#d88d88\",fillcolor=\"#ffecec\"];\n",
                 i, i, value, prev_index, next_index);
         } else if (is_head) {
             fprintf(file,
@@ -325,7 +325,7 @@ static void emit_bad_box_and_link(
 {
     fprintf(file,
         "  node_bad_%s_%zu [label=\"idx %d\\n(N/A)\",shape=rectangle,"
-        "style=\"filled,rounded\",color=\"#d66\",fillcolor=\"#ffecec\"];\n",
+        "style=\"filled,rounded\",color=\"#d66d66\",fillcolor=\"#ffecec\"];\n",
         box_tag, owner_index, bad_index);
 
     if (reverse_dir) {
@@ -354,11 +354,11 @@ static void emit_edges_free(const list_t *list, FILE *file) {
         const int next_index = list->arr[i].next;
         if (next_index >= 0 && (size_t)next_index < capacity) {
             fprintf(file,
-                "  node_%zu -> node_%d [color=\"#d88\", style=dashed, constraint=false];\n",
-                i, next_index);
+                "  node_%zu -> node_%d [color=\"d66d66\", style=dashed, constraint=false];\n",
+                i, next_index); //elseif
         } else if (next_index != -1) {
             emit_bad_box_and_link(file, "f", i, next_index,
-                                  "color=\"#d88\", style=dashed, constraint=false", 0);
+                                  "color=\"d88d88\", style=dashed, constraint=false", 0);
         }
     }
 }
@@ -385,7 +385,7 @@ static void emit_edges_next(const list_t *list, char *bidir_next, char *bidir_pr
             }
         } else if (next_index != -1) {
             emit_bad_box_and_link(file, "n", i, next_index,
-                                  "style=\"bold\", color=\"#d66\", constraint=false", 0);
+                                  "style=\"bold\", color=\"#d66d66\", constraint=false", 0);
         }
     }
 }
@@ -411,7 +411,7 @@ static void emit_edges_prev(const list_t *list, char *bidir_next, char *bidir_pr
             }
         } else if (prev_index != -1) {
             emit_bad_box_and_link(file, "p", i, prev_index,
-                                  "style=\"bold\", color=\"#d66\", constraint=false", 1);
+                                  "style=\"bold\", color=\"#d66d66\", constraint=false", 1);
         }
     }
 }
@@ -444,16 +444,23 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
 
     fprintf(html, "<pre>\n");
 
-    LOGGER_DEBUG("TEST");
-    fprintf(html, "====================[ DUMP #%d ]====================\n", idx);
-    fprintf(html, "Timestamp: %s\n", ts);
-    if (comment ) {
-        fprintf(html, "%s\n", comment);
-    } else {
-        fprintf(html, "(none)\n");
-    }
-    fprintf(html, "====================================================\n");
-    LOGGER_DEBUG("TEST");
+        fprintf(html,
+        "<pre style=\"font-family:'Fira Mono', monospace;"
+        "font-size:16px; line-height:1.28;"
+        "background:#0b0e14; color:#e6e1cf;"
+        "padding:12px; border-radius:10px;\">\n");
+
+    fprintf(html,
+        "<span style=\"color:#6b8fd6;font-weight:700;\">====================[ DUMP #%d ]====================</span>\n",
+        idx);
+    fprintf(html, "Timestamp: <span style=\"color:#8be9fd;\">%s</span>\n", ts);
+
+    if (comment && *comment)
+        fprintf(html, "<span style=\"color:#ff4d4f;font-weight:700;\">%s</span>\n", comment);
+    else
+        fprintf(html, "<span style=\"color:#999;\">(no comment)</span>\n");
+    fprintf(html,
+        "<span style=\"color:#6b8fd6;font-weight:700;\">===================================================</span>\n");
 
     fprintf(html, "list ptr : %p\n",  list);
     fprintf(html, "arr  ptr : %p\n",  list ? list->arr      :  NULL);
@@ -479,7 +486,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
         fprintf(html, "----  ------ ------  ------------  -----\n");
 
         for (size_t i = 0; i < list->capacity; ++i) {
-            int    nxt = list->arr[i].next;
+            int    next = list->arr[i].next;
             int    prv = list->arr[i].prev;
             double val = list->arr[i].val;
 
@@ -492,7 +499,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
             if ((int)i == list->free_head){strcat(marks, first ? "F" : ",F"); first = 0;}
 
             fprintf(html, "%-4zu  %-6d %-6d  %-12.6g  %-5s\n",
-                    i, nxt, prv, val, marks);
+                    i, next, prv, val, marks);
         }
     } else {
         fprintf(html, "\n(arr is NULL or capacity == 0)\n");
@@ -501,8 +508,8 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
     fprintf(html, "</pre>\n");
 
     if (svg_path) {
-        //fprintf(html, "<img src=\"%s\"/>\n", svg_path);
-        FILE* img = fopen(svg_path, "rb");
+        fprintf(html, "<img src=\"%s\" width=2250/>\n", svg_path);
+        /*FILE* img = fopen(svg_path, "rb");
         if (img) {
             char buf[4096]; size_t n;
             while ((n = fread(buf,1,sizeof(buf),img)) > 0) fwrite(buf,1,n,html);
@@ -510,9 +517,9 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
         } else {
             fprintf(html, "<pre>\nOPEN_FAILED\n</pre>\n");
         }
-            
+           */ 
     }
-    fprintf(html, "<br>\n");
+    fprintf(html, "<hr>\n");
 }
 
 //#endif

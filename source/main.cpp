@@ -82,9 +82,48 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
             }
         )
         error |= handle_file_input(list, argv[2], argv[3]);
-        list_dump(list, VER_INIT, true, "Final dump");
+
+
+
+
+        list_dump(list, VER_INIT, true, "Clear dump");
+
+        list_insert_after(list, 0, 10.0);
+        list_insert_after(list, 1, 20.0);
+        list_insert_after(list, 2, 30.0);
+        list_dump(list, VER_INIT, true, "After inserts");
+
+        
+        list_linearize(list);
+        list_dump(list, VER_INIT, true, "After linearize");
+
+        list_insert_after(list, 1, 40.0);
+        list_dump(list, VER_INIT, true, "After insert after index 1");
+
+        list_shrink_to_fit(list, false);
+        list_dump(list, VER_INIT, true, "After shrink_to_fit");
+
+
         list->arr[3].prev = 150; // to trigger error in dump
-        list_dump(list, VER_INIT, true, "Final2 dump");
+        list_dump(list, VER_INIT, true, "Corrupted dump");
+
+        list->arr[2].next = 4;
+        list_insert_auto(list, 1, 42.0);
+        
+        list->arr[3].next = 10000;
+        list_dump(list, VER_INIT, true, "Corrupted dump 2");
+/*
+        list_insert_after(list, 0, 55.0);
+        list_insert_after(list, 0, 65.0);
+        list_insert_after(list, 0, 75.0);
+        list_remove(list, 2);
+        list_remove_auto(list, 4);
+        list_remove(list, 3);
+        list_dump(list, VER_INIT, true, "After more operations");
+
+        list->arr[11].prev = 150;
+        list_dump(list, VER_INIT, true, "Corrupted dump free list");
+*/
         ON_DEBUG(
             fclose(list->dump_file);
         )

@@ -1,0 +1,367 @@
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #0 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-06 13:20:04</span>
+<span style="color:#ff4d4f;font-weight:700;">Clear dump</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffed0e04160
+arr  ptr : 0x64830d6feb00
+capacity : 10
+size     : 8
+head     : 1
+tail     : 3
+free_head: 8
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/main.cpp
+func: choose_input_type_and_process
+line: 89
+
+IDX   NEXT   PREV        VALUE    MARKS
+----  ------ ------  ------------  -----
+0     1      3       10101         Z    
+1     2      0       2             H    
+2     5      1       1                  
+3     0      6       3             T    
+4     7      5       4                  
+5     4      2       5                  
+6     3      7       4                  
+7     6      4       5                  
+8     9      -1      -1            F    
+9     -1     -1      -1                 
+
+SVG: dumps/dump_000.svg
+</pre>
+<img src="dumps/dump_000.svg" width=2250/>
+<hr>
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #1 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-06 13:20:04</span>
+<span style="color:#ff4d4f;font-weight:700;">After inserts</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffed0e04160
+arr  ptr : 0x64830d6feb00
+capacity : 20
+size     : 11
+head     : 8
+tail     : 3
+free_head: 11
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/main.cpp
+func: choose_input_type_and_process
+line: 94
+
+IDX   NEXT   PREV        VALUE    MARKS
+----  ------ ------  ------------  -----
+0     8      3       10101         Z    
+1     9      8       2                  
+2     10     9       1                  
+3     0      6       3             T    
+4     7      5       4                  
+5     4      10      5                  
+6     3      7       4                  
+7     6      4       5                  
+8     1      0       10            H    
+9     2      1       20                 
+10    5      2       30                 
+11    12     -1      -1            F    
+12    13     -1      -1                 
+13    14     -1      -1                 
+14    15     -1      -1                 
+15    16     -1      -1                 
+16    17     -1      -1                 
+17    18     -1      -1                 
+18    19     -1      -1                 
+19    -1     -1      -1                 
+
+SVG: dumps/dump_001.svg
+</pre>
+<img src="dumps/dump_001.svg" width=2250/>
+<hr>
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #2 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-06 13:20:04</span>
+<span style="color:#ff4d4f;font-weight:700;">After linearize</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffed0e04160
+arr  ptr : 0x64830d6feb00
+capacity : 20
+size     : 11
+head     : 1
+tail     : 10
+free_head: 11
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/main.cpp
+func: choose_input_type_and_process
+line: 98
+
+IDX   NEXT   PREV        VALUE    MARKS
+----  ------ ------  ------------  -----
+0     1      10      10101         Z    
+1     2      0       10            H    
+2     3      1       2                  
+3     4      2       20                 
+4     5      3       1                  
+5     6      4       30                 
+6     7      5       5                  
+7     8      6       4                  
+8     9      7       5                  
+9     10     8       4                  
+10    0      9       3             T    
+11    12     -1      -1            F    
+12    13     -1      -1                 
+13    14     -1      -1                 
+14    15     -1      -1                 
+15    16     -1      -1                 
+16    17     -1      -1                 
+17    18     -1      -1                 
+18    19     -1      -1                 
+19    -1     -1      -1                 
+
+SVG: dumps/dump_002.svg
+</pre>
+<img src="dumps/dump_002.svg" width=2250/>
+<hr>
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #3 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-06 13:20:04</span>
+<span style="color:#ff4d4f;font-weight:700;">After insert after index 1</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffed0e04160
+arr  ptr : 0x64830d6feb00
+capacity : 20
+size     : 12
+head     : 1
+tail     : 10
+free_head: 12
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/main.cpp
+func: choose_input_type_and_process
+line: 101
+
+IDX   NEXT   PREV        VALUE    MARKS
+----  ------ ------  ------------  -----
+0     1      10      10101         Z    
+1     11     0       10            H    
+2     3      11      2                  
+3     4      2       20                 
+4     5      3       1                  
+5     6      4       30                 
+6     7      5       5                  
+7     8      6       4                  
+8     9      7       5                  
+9     10     8       4                  
+10    0      9       3             T    
+11    2      1       40                 
+12    13     -1      -1            F    
+13    14     -1      -1                 
+14    15     -1      -1                 
+15    16     -1      -1                 
+16    17     -1      -1                 
+17    18     -1      -1                 
+18    19     -1      -1                 
+19    -1     -1      -1                 
+
+SVG: dumps/dump_003.svg
+</pre>
+<img src="dumps/dump_003.svg" width=2250/>
+<hr>
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #4 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-06 13:20:04</span>
+<span style="color:#ff4d4f;font-weight:700;">After shrink_to_fit</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffed0e04160
+arr  ptr : 0x64830d6feb00
+capacity : 12
+size     : 12
+head     : 1
+tail     : 11
+free_head: -1
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/main.cpp
+func: choose_input_type_and_process
+line: 104
+
+IDX   NEXT   PREV        VALUE    MARKS
+----  ------ ------  ------------  -----
+0     1      11      10101         Z    
+1     2      0       10            H    
+2     3      1       40                 
+3     4      2       2                  
+4     5      3       20                 
+5     6      4       1                  
+6     7      5       30                 
+7     8      6       5                  
+8     9      7       4                  
+9     10     8       5                  
+10    11     9       4                  
+11    0      10      3             T    
+
+SVG: dumps/dump_004.svg
+</pre>
+<img src="dumps/dump_004.svg" width=2250/>
+<hr>
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #5 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-06 13:20:04</span>
+<span style="color:#ff4d4f;font-weight:700;">Corrupted dump</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffed0e04160
+arr  ptr : 0x64830d6feb00
+capacity : 12
+size     : 12
+head     : 1
+tail     : 11
+free_head: -1
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/main.cpp
+func: choose_input_type_and_process
+line: 108
+
+IDX   NEXT   PREV        VALUE    MARKS
+----  ------ ------  ------------  -----
+0     1      11      10101         Z    
+1     2      0       10            H    
+2     3      1       40                 
+3     4      150     2                  
+4     5      3       20                 
+5     6      4       1                  
+6     7      5       30                 
+7     8      6       5                  
+8     9      7       4                  
+9     10     8       5                  
+10    11     9       4                  
+11    0      10      3             T    
+
+SVG: dumps/dump_005.svg
+</pre>
+<img src="dumps/dump_005.svg" width=2250/>
+<hr>
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #6 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-06 13:20:04</span>
+<span style="color:#ff4d4f;font-weight:700;">List_verify: mismatch in main chain
+ Comment: Before insert of 42.000000 at index 2</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffed0e04160
+arr  ptr : 0x64830d6feb00
+capacity : 12
+size     : 12
+head     : 1
+tail     : 11
+free_head: -1
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/list_operations.cpp
+func: list_insert_after
+line: 174
+
+IDX   NEXT   PREV        VALUE    MARKS
+----  ------ ------  ------------  -----
+0     1      11      10101         Z    
+1     2      0       10            H    
+2     4      1       40                 
+3     4      150     2                  
+4     5      3       20                 
+5     6      4       1                  
+6     7      5       30                 
+7     8      6       5                  
+8     9      7       4                  
+9     10     8       5                  
+10    11     9       4                  
+11    0      10      3             T    
+
+SVG: dumps/dump_006.svg
+</pre>
+<img src="dumps/dump_006.svg" width=2250/>
+<hr>
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #7 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-06 13:20:04</span>
+<span style="color:#ff4d4f;font-weight:700;">Corrupted dump 2</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffed0e04160
+arr  ptr : 0x64830d6feb00
+capacity : 12
+size     : 12
+head     : 1
+tail     : 11
+free_head: -1
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/main.cpp
+func: choose_input_type_and_process
+line: 114
+
+IDX   NEXT   PREV        VALUE    MARKS
+----  ------ ------  ------------  -----
+0     1      11      10101         Z    
+1     2      0       10            H    
+2     4      1       40                 
+3     10000  150     2                  
+4     5      3       20                 
+5     6      4       1                  
+6     7      5       30                 
+7     8      6       5                  
+8     9      7       4                  
+9     10     8       5                  
+10    11     9       4                  
+11    0      10      3             T    
+
+SVG: dumps/dump_007.svg
+</pre>
+<img src="dumps/dump_007.svg" width=2250/>
+<hr>

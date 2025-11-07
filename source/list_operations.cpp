@@ -344,12 +344,6 @@ error_code list_swap(list_t* list, int first_idx, int second_idx) {
     LOGGER_DEBUG("Swapping indices %d and %d", first_idx, second_idx);
 
     error_code error = 0;
-    ON_DEBUG(
-        error |= list_verify(list, VER_INIT, DUMP_IMG, "Before swap of %d and %d", first_idx, second_idx);
-        if (error != ERROR_NO) {
-            return error;
-        }
-    )
     if (first_idx <= 0 || second_idx <= 0 ||
         (size_t)(first_idx) >= list->capacity ||
         (size_t)(second_idx) >= list->capacity) {
@@ -385,10 +379,6 @@ error_code list_swap(list_t* list, int first_idx, int second_idx) {
         first_elem->prev = POISON;
         first_elem->next = POISON;
     }
-    
-    ON_DEBUG(
-        error |= list_verify(list, VER_INIT, DUMP_IMG, "After swap of %d and %d", first_idx, second_idx);
-    )
     return error;
 }
 
@@ -400,18 +390,18 @@ static error_code list_reorganize_free(list_t* list) {
 
     error_code error = 0;
 
-    ON_DEBUG(
-        error |= list_verify(list, VER_INIT, DUMP_IMG, "Before reorganize_free");
-        if (error != ERROR_NO) return error;
-    )
-
     if(list->size == 0) {
         return ERROR_NO;
     }
 
     int first_free = list->size;  
 
-    if ((size_t)first_free >= list->capacity) {
+    if((size_t)first_free == list->capacity) {
+        list->free_head = -1;
+        return ERROR_NO;
+    }
+
+    if ((size_t)first_free > list->capacity) {
         list->free_head = -1;
         return ERROR_BIG_SIZE;
     }
