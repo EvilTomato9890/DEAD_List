@@ -2,7 +2,7 @@
 #include "logger.h"
 #include "asserts.h"
 #include "error_handler.h"
-
+#include "list_operations.h"
 #include <cstdlib>
 #include <cstring>
 
@@ -10,7 +10,6 @@
 
 //==============================================================================
 
-static error_code list_reorganize_free(list_t* list);
 static void init_free_list(list_t* list, size_t start_index, size_t end_index) ;
 static error_code list_recalloc(list_t* list, size_t new_capacity) ; 
 static error_code normalize_capacity(list_t* list);
@@ -22,12 +21,12 @@ static void init_free_list(list_t* list, size_t start_index, size_t end_index) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     for (size_t i = start_index; i + 1 < end_index; ++i) {
-        list->arr[i].next = (int)(i + 1);
-        list->arr[i].prev = POISON;
+        list->arr[i].next = i + 1;
+        list->arr[i].prev = -1;
         list->arr[i].val  = POISON;
     }
     list->arr[end_index - 1].next = -1;
-    list->arr[end_index - 1].prev = POISON;
+    list->arr[end_index - 1].prev = -1;
     list->arr[end_index - 1].val  = POISON;
 }
 
@@ -63,15 +62,15 @@ static error_code list_recalloc(list_t* list, size_t new_capacity) {
 
     size_t old_capacity = list->capacity;
     if (list->free_head == -1) {
-        list->free_head = (int)(old_capacity);
+        list->free_head = old_capacity;
         init_free_list(list, old_capacity, new_capacity);
     } else {
-        int last_free = list->free_head;
+        ssize_t last_free = list->free_head;
         while (last_free != -1 && list->arr[last_free].next != -1) {
             last_free = list->arr[last_free].next;
         }
         if (last_free != -1) {
-            list->arr[last_free].next = (int)(old_capacity);
+            list->arr[last_free].next = old_capacity;
         }
         init_free_list(list, old_capacity, new_capacity);
     }
@@ -90,7 +89,7 @@ static error_code normalize_capacity(list_t* list) {
                  list->size, list->capacity);
 
     if (list->size + 1 > list->capacity) {
-        size_t new_capacity = (size_t)(list->capacity * GROWTH_FACTOR);
+        size_t new_capacity = (size_t)((double)list->capacity * GROWTH_FACTOR);
         LOGGER_DEBUG("Growing list to capacity %lu", new_capacity);
         return list_recalloc(list, new_capacity);
     }
@@ -118,12 +117,12 @@ error_code list_init(list_t* list_return, size_t capacity ON_DEBUG(, ver_info_t 
     }
 
     for (size_t i = 0; i + 1 < capacity; ++i) {
-        arr[i].next = (int)(i + 1);
-        arr[i].prev = POISON;
+        arr[i].next = i + 1;
+        arr[i].prev = -1;
         arr[i].val  = POISON;
     }
     arr[capacity - 1].next = -1;
-    arr[capacity - 1].prev = POISON;
+    arr[capacity - 1].prev = -1;
     arr[capacity - 1].val  = POISON;
 
     arr[0].next = 0;
@@ -165,7 +164,7 @@ error_code list_dest(list_t* list) {
     return error;
 }
 
-int list_insert_after(list_t* list, int insert_index, double val) {
+ssize_t list_insert_after(list_t* list, ssize_t insert_index, double val) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Inserting value %lf after index %d", val, insert_index);
@@ -181,7 +180,7 @@ int list_insert_after(list_t* list, int insert_index, double val) {
         return -1;
     }
 
-    int free_index = list->free_head;
+    ssize_t free_index = list->free_head;
     if (free_index == -1) {
         LOGGER_ERROR("No free cells available, grow required");
         error_code grow_err = normalize_capacity(list);
@@ -195,7 +194,7 @@ int list_insert_after(list_t* list, int insert_index, double val) {
     }
     list->free_head = list->arr[free_index].next;
 
-    int next_index  = list->arr[insert_index].next;
+    ssize_t next_index  = list->arr[insert_index].next;
     list->arr[free_index].val  = val;
     list->arr[free_index].next = next_index;
     list->arr[free_index].prev = insert_index;
@@ -223,22 +222,22 @@ int list_insert_after(list_t* list, int insert_index, double val) {
     return free_index;
 }
 
-int list_insert_auto(list_t* list, int insert_index, double val) {
+ssize_t list_insert_auto(list_t* list, ssize_t insert_index, double val) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
 
-    if (insert_index < 0 || insert_index > (int)(list->size)) {
+    if (insert_index < 0 || insert_index > list->size) {
         LOGGER_ERROR("list_insert_auto: insert_index %d out of range", insert_index);
         return -1;
     }
-    int physical = list->head;
-    for (int i = 0; i < insert_index; ++i) {
+    ssize_t physical = list->head;
+    for (ssize_t i = 0; i < insert_index; ++i) {
         physical = list->arr[physical].next;
     }
     return list_insert_after(list, physical, val);
 }
 
-int list_insert_before(list_t* list, int insert_index, double val) {
+ssize_t list_insert_before(list_t* list, ssize_t insert_index, double val) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Inserting before physical index %d", insert_index);
@@ -246,25 +245,25 @@ int list_insert_before(list_t* list, int insert_index, double val) {
         LOGGER_ERROR("list_insert_before: insert_index %d invalid", insert_index);
         return -1;
     }
-    int prev_index = list->arr[insert_index].prev;
+    ssize_t prev_index = list->arr[insert_index].prev;
     return list_insert_after(list, prev_index, val);
 }
 
-int list_push_back(list_t* list, double val) {
+ssize_t list_push_back(list_t* list, double val) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Pushing back value %lf", val);
     return list_insert_before(list, 0, val);
 }
 
-int list_push_front(list_t* list, double val) {
+ssize_t list_push_front(list_t* list, double val) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Pushing front value %lf", val);
     return list_insert_after(list, 0, val);
 }
 
-error_code list_remove(list_t* list, int remove_index) {
+error_code list_remove(list_t* list, ssize_t remove_index) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Removing node at physical index %d", remove_index);
@@ -285,8 +284,8 @@ error_code list_remove(list_t* list, int remove_index) {
         return ERROR_INCORRECT_INDEX;
     }
 
-    int prev_index = list->arr[remove_index].prev;
-    int next_index = list->arr[remove_index].next;
+    ssize_t prev_index = list->arr[remove_index].prev;
+    ssize_t next_index = list->arr[remove_index].next;
 
     list->arr[prev_index].next = next_index;
     list->arr[next_index].prev = prev_index;
@@ -295,7 +294,7 @@ error_code list_remove(list_t* list, int remove_index) {
     list->tail = list->arr[0].prev;
 
     list->arr[remove_index].next = list->free_head;
-    list->arr[remove_index].prev = POISON;
+    list->arr[remove_index].prev = -1;
     list->arr[remove_index].val  = POISON;
     list->free_head = remove_index;
 
@@ -309,16 +308,16 @@ error_code list_remove(list_t* list, int remove_index) {
     return ERROR_NO;
 }
 
-error_code list_remove_auto(list_t* list, int remove_index) {
+error_code list_remove_auto(list_t* list, ssize_t remove_index) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Removing logical index %d", remove_index);
-    if (remove_index < 0 || remove_index >= (int)(list->size - 1)) {
+    if (remove_index < 0 || remove_index >= list->size - 1) {
         LOGGER_ERROR("list_remove_auto: remove_index %d out of range", remove_index);
         return ERROR_INCORRECT_INDEX;
     }
-    int physical_index = list->head;
-    for (int i = 0; i < remove_index; ++i) {
+    ssize_t physical_index = list->head;
+    for (ssize_t i = 0; i < remove_index; ++i) {
         physical_index = list->arr[physical_index].next;
     }
     return list_remove(list, physical_index);
@@ -338,7 +337,7 @@ error_code list_pop_front(list_t* list) {
     return list_remove(list, list->arr[0].next);
 }
 
-error_code list_swap(list_t* list, int first_idx, int second_idx) {
+error_code list_swap(list_t* list, ssize_t first_idx, ssize_t second_idx) {
     HARD_ASSERT(list != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Swapping indices %d and %d", first_idx, second_idx);
@@ -364,20 +363,31 @@ error_code list_swap(list_t* list, int first_idx, int second_idx) {
         node_t temp = *first_elem;
         *first_elem = *second_elem;
         *second_elem = temp;
+
     } else if (!list_node_is_free(second_elem)) {
         list->arr[second_elem->next].prev = first_idx;
         list->arr[second_elem->prev].next = first_idx;
         *first_elem = *second_elem;
         second_elem->val  = POISON;
-        second_elem->prev = POISON;
-        second_elem->next = POISON;
-    } else {
+        second_elem->prev = -1;
+        second_elem->next = -1;
+
+    } else if(!list_node_is_free(first_elem)) {
         list->arr[first_elem->next].prev = second_idx;
         list->arr[first_elem->prev].next = second_idx;
         *second_elem = *first_elem;
         first_elem->val  = POISON;
-        first_elem->prev = POISON;
-        first_elem->next = POISON;
+        first_elem->prev = -1;
+        first_elem->next = -1;
+
+    } else {
+        first_elem->val  = POISON;
+        first_elem->prev = -1;
+        first_elem->next = -1;
+
+        second_elem->val  = POISON;
+        second_elem->prev = -1;
+        second_elem->next = -1;
     }
     return error;
 }
@@ -394,7 +404,7 @@ static error_code list_reorganize_free(list_t* list) {
         return ERROR_NO;
     }
 
-    int first_free = list->size;  
+    ssize_t first_free = list->size;  
 
     if((size_t)first_free == list->capacity) {
         list->free_head = -1;
@@ -408,11 +418,11 @@ static error_code list_reorganize_free(list_t* list) {
 
     list->free_head = first_free;
     for (size_t i = (size_t)first_free; i + 1 < list->capacity; ++i) {
-        list->arr[i].prev = POISON;
+        list->arr[i].prev = -1;
         list->arr[i].val  = POISON;
-        list->arr[i].next = (int)(i + 1);
+        list->arr[i].next = i + 1;
     }
-    list->arr[list->capacity - 1].prev = POISON;
+    list->arr[list->capacity - 1].prev = -1;
     list->arr[list->capacity - 1].val  = POISON;
     list->arr[list->capacity - 1].next = -1;
 
@@ -435,7 +445,7 @@ error_code list_linearize(list_t* list) {
         if (error != ERROR_NO) return error;
     )
 
-    const int n = (int)list->size - 1;
+    const ssize_t n = list->size - 1;
     if (n <= 0) {
         list->arr[0].next = 0;
         list->arr[0].prev = 0;
@@ -444,19 +454,24 @@ error_code list_linearize(list_t* list) {
         return list_reorganize_free(list);
     }
 
-    int cur = list->arr[0].next; 
-    for (int i = 1; i <= n; ++i) {
+    ssize_t cur = list->arr[0].next; 
+    for (ssize_t i = 1; i <= n; ++i) {
         if (cur != i) {
-            error_code error = list_swap(list, i, cur);
+            error |= list_swap(list, i, cur);
             if (error != ERROR_NO) return error;
         }
         cur = list->arr[i].next;
     }
 
-    for (int i = 1; i <= n; ++i) {
-        list->arr[i].prev = (i == 1 ? 0 : i - 1);
-        list->arr[i].next = (i == n ? 0 : i + 1);
+    list->arr[1].prev = 0;
+    list->arr[1].next = 2;
+    for (ssize_t i = 2; i < n; i++) {
+        list->arr[i].prev = i - 1;
+        list->arr[i].next = i + 1;
     }
+    list->arr[n].prev = n - 1;
+    list->arr[n].next = 0;
+
     list->arr[0].next = 1;
     list->arr[0].prev = n;
     list->head = 1;

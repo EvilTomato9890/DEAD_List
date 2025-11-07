@@ -6,7 +6,7 @@ digraph G{
   node [fontname="Fira Mono",shape=record,style="filled,rounded",fontsize=11];
   node_0[shape=record,label="ind: 0 | val: 10101 | { prev: 11 | next: 2 }",color="#6b8fd6",style="filled,bold,rounded",fillcolor="#e9f2ff"];
   node_1[shape=record,label=" ind: 1 | val: -100 | { prev: -1 | next: 6 } ",style="filled,rounded",color="#d66d66",fillcolor="#ffecec"];
-  node_2[shape=record,label=" ind: 2 (HEAD) | val: 40 | { prev: 0 | next: 3 } ",color="#5aa99b",fillcolor="#e9fbf5"];
+  node_2[shape=record,label=" ind: 2 (HEAD) | val: 40 | { prev: 0 | next: 4 } ",color="#5aa99b",fillcolor="#e9fbf5"];
   node_3[shape=record,label=" ind: 3 | val: 2 | { prev: 150 | next: 4 } ",color="#000000",fillcolor="#fff3e0"];
   node_4[shape=record,label=" ind: 4 | val: 20 | { prev: 3 | next: 7 } ",color="#000000",fillcolor="#fff3e0"];
   node_5[shape=record,label=" ind: 5 | val: -100 | { prev: -1 | next: -1 } ",style="filled,rounded",color="#d66d66",fillcolor="#ffecec"];
@@ -29,7 +29,7 @@ digraph G{
   node_10 -> node_11 [weight=1000,style=invis];
   node_1 -> node_6 [color="#d88d88", style=dashed, constraint=false];
   node_0 -> node_2 [dir=both, color="#999999", constraint=false];
-  node_2 -> node_3 [color="#ff0000", penwidth=2.2, constraint=false];
+  node_2 -> node_4 [color="#ff0000", penwidth=2.2, constraint=false];
   node_3 -> node_4 [dir=both, color="#999999", constraint=false];
   node_4 -> node_7 [dir=both, color="#999999", constraint=false];
   node_6 -> node_4 [color="#ff0000", penwidth=2.2, constraint=false];

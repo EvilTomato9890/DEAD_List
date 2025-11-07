@@ -39,6 +39,6 @@ digraph G{
   node_9 -> node_10 [dir=both, color="#999999", constraint=false];
   node_10 -> node_11 [dir=both, color="#999999", constraint=false];
   node_11 -> node_0 [dir=both, color="#999999", constraint=false];
-  node_free [label=free_head,color="#d88d88",shape=rectangle,style="filled,rounded",fillcolor="#ffecec"];
+  node_free [label=free_head,color="#d66d66",shape=rectangle,style="filled,rounded",fillcolor="#ffecec"];
   node_free -> node_-1 [color="#d88d88", style=dashed, constraint=false];
 }

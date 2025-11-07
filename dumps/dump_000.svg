@@ -171,39 +171,39 @@
 <!-- node_8 -->
 <g id="node9" class="node">
 <title>node_8</title>
-<path fill="#ffecec" stroke="#d88d88" d="M1332,-175C1332,-175 1423,-175 1423,-175 1429,-175 1435,-181 1435,-187 1435,-187 1435,-223 1435,-223 1435,-229 1429,-235 1423,-235 1423,-235 1332,-235 1332,-235 1326,-235 1320,-229 1320,-223 1320,-223 1320,-187 1320,-187 1320,-181 1326,-175 1332,-175"/>
+<path fill="#ffecec" stroke="#d66d66" d="M1332,-175C1332,-175 1423,-175 1423,-175 1429,-175 1435,-181 1435,-187 1435,-187 1435,-223 1435,-223 1435,-229 1429,-235 1423,-235 1423,-235 1332,-235 1332,-235 1326,-235 1320,-229 1320,-223 1320,-223 1320,-187 1320,-187 1320,-181 1326,-175 1332,-175"/>
 <text text-anchor="middle" x="1377.5" y="-222.2" font-family="Fira Mono" font-size="11.00">ind: 8</text>
-<polyline fill="none" stroke="#d88d88" points="1320,-215 1435,-215 "/>
-<text text-anchor="middle" x="1377.5" y="-202.2" font-family="Fira Mono" font-size="11.00">val: &#45;1</text>
-<polyline fill="none" stroke="#d88d88" points="1320,-195 1435,-195 "/>
+<polyline fill="none" stroke="#d66d66" points="1320,-215 1435,-215 "/>
+<text text-anchor="middle" x="1377.5" y="-202.2" font-family="Fira Mono" font-size="11.00">val: &#45;100</text>
+<polyline fill="none" stroke="#d66d66" points="1320,-195 1435,-195 "/>
 <text text-anchor="middle" x="1349.5" y="-182.2" font-family="Fira Mono" font-size="11.00">prev: &#45;1</text>
-<polyline fill="none" stroke="#d88d88" points="1379,-175 1379,-195 "/>
+<polyline fill="none" stroke="#d66d66" points="1379,-175 1379,-195 "/>
 <text text-anchor="middle" x="1407" y="-182.2" font-family="Fira Mono" font-size="11.00">next: 9</text>
 </g>
 <!-- node_7&#45;&gt;node_8 -->
 <!-- node_9 -->
 <g id="node10" class="node">
 <title>node_9</title>
-<path fill="#ffecec" stroke="#d88d88" d="M1501,-175C1501,-175 1595,-175 1595,-175 1601,-175 1607,-181 1607,-187 1607,-187 1607,-223 1607,-223 1607,-229 1601,-235 1595,-235 1595,-235 1501,-235 1501,-235 1495,-235 1489,-229 1489,-223 1489,-223 1489,-187 1489,-187 1489,-181 1495,-175 1501,-175"/>
+<path fill="#ffecec" stroke="#d66d66" d="M1501,-175C1501,-175 1595,-175 1595,-175 1601,-175 1607,-181 1607,-187 1607,-187 1607,-223 1607,-223 1607,-229 1601,-235 1595,-235 1595,-235 1501,-235 1501,-235 1495,-235 1489,-229 1489,-223 1489,-223 1489,-187 1489,-187 1489,-181 1495,-175 1501,-175"/>
 <text text-anchor="middle" x="1548" y="-222.2" font-family="Fira Mono" font-size="11.00">ind: 9</text>
-<polyline fill="none" stroke="#d88d88" points="1489,-215 1607,-215 "/>
-<text text-anchor="middle" x="1548" y="-202.2" font-family="Fira Mono" font-size="11.00">val: &#45;1</text>
-<polyline fill="none" stroke="#d88d88" points="1489,-195 1607,-195 "/>
+<polyline fill="none" stroke="#d66d66" points="1489,-215 1607,-215 "/>
+<text text-anchor="middle" x="1548" y="-202.2" font-family="Fira Mono" font-size="11.00">val: &#45;100</text>
+<polyline fill="none" stroke="#d66d66" points="1489,-195 1607,-195 "/>
 <text text-anchor="middle" x="1518.5" y="-182.2" font-family="Fira Mono" font-size="11.00">prev: &#45;1</text>
-<polyline fill="none" stroke="#d88d88" points="1548,-175 1548,-195 "/>
+<polyline fill="none" stroke="#d66d66" points="1548,-175 1548,-195 "/>
 <text text-anchor="middle" x="1577.5" y="-182.2" font-family="Fira Mono" font-size="11.00">next: &#45;1</text>
 </g>
 <!-- node_8&#45;&gt;node_9 -->
 <!-- node_8&#45;&gt;node_9 -->
 <g id="edge10" class="edge">
 <title>node_8&#45;&gt;node_9</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M1435.22,-215.17C1435.22,-215.17 1478.88,-215.17 1478.88,-215.17"/>
-<polygon fill="#000000" stroke="#000000" points="1478.88,-218.67 1488.88,-215.17 1478.88,-211.67 1478.88,-218.67"/>
+<path fill="none" stroke="#d88d88" stroke-dasharray="5,2" d="M1435.22,-215.17C1435.22,-215.17 1478.88,-215.17 1478.88,-215.17"/>
+<polygon fill="#d88d88" stroke="#d88d88" points="1478.88,-218.67 1488.88,-215.17 1478.88,-211.67 1478.88,-218.67"/>
 </g>
 <!-- node_free -->
 <g id="node11" class="node">
 <title>node_free</title>
-<path fill="#ffecec" stroke="#d88d88" d="M79,-36C79,-36 32,-36 32,-36 26,-36 20,-30 20,-24 20,-24 20,-12 20,-12 20,-6 26,0 32,0 32,0 79,0 79,0 85,0 91,-6 91,-12 91,-12 91,-24 91,-24 91,-30 85,-36 79,-36"/>
+<path fill="#ffecec" stroke="#d66d66" d="M79,-36C79,-36 32,-36 32,-36 26,-36 20,-30 20,-24 20,-24 20,-12 20,-12 20,-6 26,0 32,0 32,0 79,0 79,0 85,0 91,-6 91,-12 91,-12 91,-24 91,-24 91,-30 85,-36 79,-36"/>
 <text text-anchor="middle" x="55.5" y="-15.2" font-family="Fira Mono" font-size="11.00">free_head</text>
 </g>
 <!-- node_free&#45;&gt;node_8 -->

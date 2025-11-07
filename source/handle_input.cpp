@@ -7,29 +7,48 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#define MAX_FILE_REQUESTS 10
-#define MAX_WORD_LENGTH 128
+const int MAX_FILE_REQUESTS = 10;
+const int MAX_WORD_LENGTH   = 128;
 #define SCAN_FORMAT "%127s"
-#define ERROR_NO 0
 
 //==============================================================================
 
-void clear_input_buffer() {
-    int c;
+static error_code read_ssize_t(ssize_t* value);
+static void clear_input_buffer();
+static error_code read_double(double* value);
+static error_code perform_auto_insert(list_t* list, ssize_t index, double value);
+static error_code perform_manual_insert(list_t* list, ssize_t index, double value);
+static error_code handle_auto_insert_console(list_t* list);
+static error_code handle_auto_remove_console(list_t* list);
+static error_code handle_manual_insert_console(list_t* list);
+static error_code handle_manual_remove_console(list_t* list);
+static FILE* open_file_console(const char* mode);
+static error_code handle_auto_insert_file(list_t* list, FILE* file);
+static error_code handle_auto_remove_file(list_t* list, FILE* file);
+static error_code handle_manual_insert_file(list_t* list, FILE* file);
+static error_code handle_manual_remove_file(list_t* list, FILE* file);
+//------------------------------------------------------------------------------
+typedef error_code (*file_command_handler_t)(list_t*, FILE*);
+static file_command_handler_t get_file_command_handler(const char* command);
+
+//==============================================================================
+
+static void clear_input_buffer() {
+    int c = 0;
     while ((c = getchar()) != '\n' && c != EOF) { }
 }
 
 //==============================================================================
 
-error_code read_int(int* value) {
-    if (scanf("%d", value) != 1) {
+static error_code read_ssize_t(ssize_t* value) {
+    if (scanf("%ld", value) != 1) {
         clear_input_buffer();
         return ERROR_INCORRECT_ARGS_CMD;
     }
     return ERROR_NO;
 }
 
-error_code read_double(double* value) {
+static error_code read_double(double* value) {
     if (scanf("%lf", value) != 1) {
         clear_input_buffer();
         return ERROR_INCORRECT_ARGS_CMD;
@@ -39,64 +58,64 @@ error_code read_double(double* value) {
 
 //==============================================================================
 
-error_code perform_auto_insert(list_t* list, int index, double value) {
-    int physical_idx = list_insert_auto(list, index, value);
+static error_code perform_auto_insert(list_t* list, ssize_t index, double value) {
+    ssize_t physical_idx = list_insert_auto(list, index, value);
     if (physical_idx == -1) {
         LOGGER_ERROR("Auto insert failed");
         return ERROR_INSERT_FAIL;
     }
-    LOGGER_DEBUG("%lf inserted at logical index %d (physical: %d)", 
+    LOGGER_DEBUG("%lf inserted at logical index %ld (physical: %ld)", 
                  value, index, physical_idx);
     return ERROR_NO;
 }
 
-error_code perform_manual_insert(list_t* list, int index, double value) {
-    int physical_idx = list_insert_after(list, index, value);
+static error_code perform_manual_insert(list_t* list, ssize_t index, double value) {
+    ssize_t physical_idx = list_insert_after(list, index, value);
     if (physical_idx == -1) {
         LOGGER_ERROR("Manual insert failed");
         return ERROR_INSERT_FAIL;
     }
-    LOGGER_DEBUG("%lf inserted after %d (physical: %d)", 
+    LOGGER_DEBUG("%lf inserted after %ld (physical: %ld)", 
                  value, index, physical_idx);
     return ERROR_NO;
 }
 
 //==============================================================================
 
-error_code handle_auto_insert_console(list_t* list) {
-    int index;
-    double value;
+static error_code handle_auto_insert_console(list_t* list) {
+    ssize_t index = 0;
+    double value  = 0;
     
-    if (read_int(&index) != ERROR_NO || read_double(&value) != ERROR_NO) {
+    if (read_ssize_t(&index) != ERROR_NO || read_double(&value) != ERROR_NO) {
         LOGGER_ERROR("Invalid arguments for auto insert");
         return ERROR_INCORRECT_ARGS_CMD;
     }
     return perform_auto_insert(list, index, value);
 }
 
-error_code handle_auto_remove_console(list_t* list) {
-    int index;
-    if (read_int(&index) != ERROR_NO) {
+static error_code handle_auto_remove_console(list_t* list) {
+    ssize_t index = 0;
+    if (read_ssize_t(&index) != ERROR_NO) {
         LOGGER_ERROR("Invalid index for auto remove");
         return ERROR_INCORRECT_ARGS_CMD;
     }
     return list_remove_auto(list, index);
 }
 
-error_code handle_manual_insert_console(list_t* list) {
-    int index;
-    double value;
+static error_code handle_manual_insert_console(list_t* list) {
+    ssize_t index = 0;
+    double value  = 0;
     
-    if (read_int(&index) != ERROR_NO || read_double(&value) != ERROR_NO) {
+    if (read_ssize_t(&index) != ERROR_NO || read_double(&value) != ERROR_NO) {
         LOGGER_ERROR("Invalid arguments for manual insert");
         return ERROR_INCORRECT_ARGS_CMD;
     }
     return perform_manual_insert(list, index, value);
 }
 
-error_code handle_manual_remove_console(list_t* list) {
-    int index;
-    if (read_int(&index) != ERROR_NO) {
+static error_code handle_manual_remove_console(list_t* list) {
+    ssize_t index = 0;;
+    if (read_ssize_t(&index) != ERROR_NO) {
         LOGGER_ERROR("Invalid index for manual remove");
         return ERROR_INCORRECT_ARGS_CMD;
     }
@@ -107,7 +126,7 @@ error_code handle_manual_remove_console(list_t* list) {
 
 static FILE* open_file_console(const char* mode) {
     char file_name[100] = {};
-    int cnt = 0;
+    ssize_t cnt = 0;
     FILE* file = NULL;
 
     while (cnt < MAX_FILE_REQUESTS) {
@@ -138,9 +157,9 @@ static FILE* open_file_console(const char* mode) {
 typedef error_code (*file_command_handler_t)(list_t*, FILE*);
 
 static error_code handle_auto_insert_file(list_t* list, FILE* file) {
-    int index;
-    double value;
-    if (fscanf(file, "%d %lf", &index, &value) != 2) {
+    ssize_t index    = 0;
+    double value = 0;
+    if (fscanf(file, "%ld %lf", &index, &value) != 2) {
         LOGGER_ERROR("Invalid arguments for auto insert in file");
         return ERROR_INCORRECT_ARGS_CMD;
     }
@@ -148,8 +167,8 @@ static error_code handle_auto_insert_file(list_t* list, FILE* file) {
 }
 
 static error_code handle_auto_remove_file(list_t* list, FILE* file) {
-    int index;
-    if (fscanf(file, "%d", &index) != 1) {
+    ssize_t index = 0;
+    if (fscanf(file, "%ld", &index) != 1) {
         LOGGER_ERROR("Invalid index for auto remove in file");
         return ERROR_INCORRECT_ARGS_CMD;
     }
@@ -157,9 +176,9 @@ static error_code handle_auto_remove_file(list_t* list, FILE* file) {
 }
 
 static error_code handle_manual_insert_file(list_t* list, FILE* file) {
-    int index;
+    ssize_t index;
     double value;
-    if (fscanf(file, "%d %lf", &index, &value) != 2) {
+    if (fscanf(file, "%ld %lf", &index, &value) != 2) {
         LOGGER_ERROR("Invalid arguments for manual insert in file");
         return ERROR_INCORRECT_ARGS_CMD;
     }
@@ -167,8 +186,8 @@ static error_code handle_manual_insert_file(list_t* list, FILE* file) {
 }
 
 static error_code handle_manual_remove_file(list_t* list, FILE* file) {
-    int index;
-    if (fscanf(file, "%d", &index) != 1) {
+    ssize_t index = 0;
+    if (fscanf(file, "%ld", &index) != 1) {
         LOGGER_ERROR("Invalid index for manual remove in file");
         return ERROR_INCORRECT_ARGS_CMD;
     }
@@ -198,7 +217,7 @@ static error_code process_file_commands(list_t* list, FILE* input_file, bool use
         }
         error_code result = handler(list, input_file);
         if (result != ERROR_NO && use_console_output) {
-            LOGGER_ERROR("Command %s failed with error %d", word, result);
+            LOGGER_ERROR("Command %s failed with error %ld", word, result);
         }
     }
     
@@ -242,8 +261,6 @@ error_code handle_interactive_console_input(list_t* list) {
     return ERROR_NO;
 }
 
-//==============================================================================
-
 error_code handle_interactive_file_input(list_t* list) {
     printf("Input name of file\n");
     FILE* input_file = open_file_console("r");
@@ -256,9 +273,6 @@ error_code handle_interactive_file_input(list_t* list) {
     fclose(input_file);
     return result;
 }
-
-
-//==============================================================================
 
 error_code handle_file_input(list_t* list, char* name_input_file, char* name_output_file) {
     FILE* input_file = fopen(name_input_file, "r");

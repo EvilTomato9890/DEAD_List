@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 
     error |= list_dest(&list);
     LOGGER_DEBUG("programm ended");
-    RETURN_IF_ERROR(error);
+    LOGGER_DEBUG("ERROR_CODE=%ld", (error));
     return 0;
 }
 
@@ -84,9 +84,7 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
         error |= handle_file_input(list, argv[2], argv[3]);
 
 
-
-
-        list_dump(list, VER_INIT, true, "Clear dump");
+        list_dump(list, VER_INIT, false, "Clear dump"); //todo: не вставлять
 
         list_insert_after(list, 0, 10.0);
         list_insert_after(list, 1, 20.0);
@@ -104,6 +102,16 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
         list_dump(list, VER_INIT, true, "After shrink_to_fit");
 
 
+        list_remove(list, 5);
+        list_remove(list, 6);
+        list_remove(list, 1);
+        list_dump(list, VER_INIT, true, "After removes");
+
+        list->arr[6].prev = 10;
+        list->arr[6].next = 4;
+        list_dump(list, VER_INIT, true, "After corrupt free");
+
+
         list->arr[3].prev = 150; // to trigger error in dump
         list_dump(list, VER_INIT, true, "Corrupted dump");
 
@@ -112,6 +120,9 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
         
         list->arr[3].next = 10000;
         list_dump(list, VER_INIT, true, "Corrupted dump 2");
+
+
+
 /*
         list_insert_after(list, 0, 55.0);
         list_insert_after(list, 0, 65.0);

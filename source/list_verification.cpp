@@ -10,13 +10,47 @@
 #include <time.h>
 
 //#ifdef VERIFY_DEBUG
-
-const double dpi       = 96.0;
-const double max_w_in  = 750.0 / dpi;
-const double max_h_in  = 500.0 / dpi;
+//цвета то collors
+static const double dpi       = 96.0;
+static const double max_w_in  = 750.0 / dpi;
+static const double max_h_in  = 500.0 / dpi;
 
 //==============================================================================
 
+#define LIGHT1_BLUE  "#6b8fd6"
+#define LIGHT2_BLUE  "#e9f2ff"
+#define LIGHT1_RED   "#ffecec"
+#define LIGHT2_RED   "#d88d88"
+#define LIGHT3_RED   "#d66d66"
+#define RED          "#ff0000"
+#define CIAN         "#5aa99b"
+#define LIGHT_CIAN   "#e9fbf5"
+#define PURPLE       "#8e6bd6"
+#define LIGHT_PURPLE "#f1eafd"
+#define BLACK        "#000000"
+#define LIGHT_BROWN  "#fff3e0"
+#define LIGHT_GRAY   "#999999"
+
+//==============================================================================
+
+#define ELEM_0_BORDER       LIGHT1_BLUE
+#define ELEM_0_BACK         LIGHT2_BLUE
+#define FREE_NODE_BORDER    LIGHT3_RED
+#define FREE_NODE_BACK      LIGHT1_RED
+#define HEAD_BACK           LIGHT_CIAN
+#define HEAD_BORDER         CIAN
+#define TAIL_BACK           LIGHT_PURPLE
+#define TAIL_BORDER         PURPLE
+#define BASIC_BORDER        BLACK
+#define BASIC_BACK          LIGHT_BROWN
+#define BAD_BOX_BORDER      LIGHT3_RED
+#define BAD_BOX_BACK        LIGHT2_RED
+#define EDGE_FREE           LIGHT2_RED
+#define EDGE_TO_BAD_BOX     LIGHT1_RED
+#define EDGE_BASIC          LIGHT_GRAY
+#define EDGE_WRONG          RED
+
+//==============================================================================
 static void vfmt(char* buf, size_t capacity, const char* fmt, va_list ap) {
     if (!fmt) { if (capacity) buf[0] = '\0'; return; }
     vsnprintf(buf, capacity, fmt, ap);
@@ -167,6 +201,7 @@ error_code list_verify(list_t* list,
     if (list->arr && capacity > 0) {
         error |= validate_main_chain(list, capacity, &error_description);
         error |= validate_free_chain(list, capacity, &error_description);
+        error_description = "Corrupted chain";
     }
 
     if (error != 0 && mode != DUMP_NO) {
@@ -239,7 +274,7 @@ int dump_make_graphviz_svg(const list_t* list, const char* base_name) {
     fprintf(file,
         "  node_0[shape=record,"
         "label=\"ind: 0 | val: %g | { prev: %d | next: %d }\"," 
-        "color=\"#6b8fd6\",style=\"filled,bold,rounded\",fillcolor=\"#e9f2ff\"];\n",
+        "color=\"" ELEM_0_BORDER "\",style=\"filled,bold,rounded\",fillcolor=\"" ELEM_0_BACK "\"];\n",
         list->arr[0].val, list->arr[0].prev, list->arr[0].next);
 
     emit_nodes(list, file);
@@ -263,8 +298,8 @@ int dump_make_graphviz_svg(const list_t* list, const char* base_name) {
     free(bidir_prev);
 
     fprintf(file,
-        "  node_free [label=free_head,color=\"#d88d88\",shape=rectangle,style=\"filled,rounded\",fillcolor=\"#ffecec\"];\n");
-    fprintf(file, "  node_free -> node_%d [color=\"#d88d88\", style=dashed, constraint=false];\n", list->free_head);
+        "  node_free [label=free_head,color=\"" FREE_NODE_BORDER  "\",shape=rectangle,style=\"filled,rounded\",fillcolor=\"" FREE_NODE_BACK "\"];\n");
+    fprintf(file, "  node_free -> node_%d [color=\"" EDGE_FREE "\", style=dashed, constraint=false];\n", list->free_head);
 
     fprintf(file, "}\n");
     fclose(file);
@@ -279,9 +314,9 @@ static void emit_nodes(const list_t *list, FILE *file) {
     for (size_t i = 1; i < capacity; ++i) {
         const int next_index  = list->arr[i].next;
         const int prev_index  = list->arr[i].prev;
-        const double value    = list->arr[i].val;
+        const double val      = list->arr[i].val;
 
-        const int is_free = (prev_index == -1);
+        const int is_free = (prev_index == -1 || val == POISON);
         const int is_head = (i == (size_t)list->head);
         const int is_tail = (i == (size_t)list->tail);
 
@@ -289,26 +324,26 @@ static void emit_nodes(const list_t *list, FILE *file) {
             fprintf(file,
                 "  node_%zu[shape=record,"
                 "label=\" ind: %zu | val: %g | { prev: %d | next: %d } \","
-                "style=\"filled,rounded\",color=\"#d88d88\",fillcolor=\"#ffecec\"];\n",
-                i, i, value, prev_index, next_index);
+                "style=\"filled,rounded\",color=\"" FREE_NODE_BORDER "\",fillcolor=\"" FREE_NODE_BACK "\"];\n",
+                i, i, val, prev_index, next_index);
         } else if (is_head) {
             fprintf(file,
                 "  node_%zu[shape=record,"
                 "label=\" ind: %zu (HEAD) | val: %g | { prev: %d | next: %d } \","
-                "color=\"#5aa99b\",fillcolor=\"#e9fbf5\"];\n",
-                i, i, value, prev_index, next_index);
+                "color=\"" HEAD_BORDER "\",fillcolor=\"" HEAD_BACK "\"];\n",
+                i, i, val, prev_index, next_index);
         } else if (is_tail) {
             fprintf(file,
                 "  node_%zu[shape=record,"
                 "label=\" ind: %zu (TAIL) | val: %g | { prev: %d | next: %d } \","
-                "color=\"#8e6bd6\",fillcolor=\"#f1eafd\"];\n",
-                i, i, value, prev_index, next_index);
+                "color=\"" TAIL_BORDER "\",fillcolor=\"" TAIL_BACK "\"];\n",
+                i, i, val, prev_index, next_index);
         } else {
             fprintf(file,
                 "  node_%zu[shape=record,"
                 "label=\" ind: %zu | val: %g | { prev: %d | next: %d } \","
-                "color=\"#000000\",fillcolor=\"#fff3e0\"];\n",
-                i, i, value, prev_index, next_index);
+                "color=\"" BASIC_BORDER "\",fillcolor=\"" BASIC_BACK "\"];\n",
+                i, i, val, prev_index, next_index);
         }
     }
 }
@@ -325,7 +360,7 @@ static void emit_bad_box_and_link(
 {
     fprintf(file,
         "  node_bad_%s_%zu [label=\"idx %d\\n(N/A)\",shape=rectangle,"
-        "style=\"filled,rounded\",color=\"#d66d66\",fillcolor=\"#ffecec\"];\n",
+        "style=\"filled,rounded\",color=\"" BAD_BOX_BORDER "\",fillcolor=\"" BAD_BOX_BACK "\"];\n",
         box_tag, owner_index, bad_index);
 
     if (reverse_dir) {
@@ -354,11 +389,11 @@ static void emit_edges_free(const list_t *list, FILE *file) {
         const int next_index = list->arr[i].next;
         if (next_index >= 0 && (size_t)next_index < capacity) {
             fprintf(file,
-                "  node_%zu -> node_%d [color=\"d66d66\", style=dashed, constraint=false];\n",
-                i, next_index); //elseif
+                "  node_%zu -> node_%d [color=\"" EDGE_FREE "\", style=dashed, constraint=false];\n",
+                i, next_index);
         } else if (next_index != -1) {
             emit_bad_box_and_link(file, "f", i, next_index,
-                                  "color=\"d88d88\", style=dashed, constraint=false", 0);
+                                  "color=\"" EDGE_TO_BAD_BOX "\", style=dashed, constraint=false", 0);
         }
     }
 }
@@ -374,18 +409,18 @@ static void emit_edges_next(const list_t *list, char *bidir_next, char *bidir_pr
             if (list->arr[(size_t)next_index].prev == (int)i) {
                 if (!bidir_next[i]) {
                     fprintf(file,
-                        "  node_%zu -> node_%d [dir=both, color=\"#999999\", constraint=false];\n",
+                        "  node_%zu -> node_%d [dir=both, color=\"" EDGE_BASIC "\", constraint=false];\n",
                         i, next_index);
                     bidir_prev[(size_t)next_index] = 1;
                 }
             } else {
                 fprintf(file,
-                    "  node_%zu -> node_%d [color=\"#6b8fd6\", penwidth=2.2, constraint=false];\n",
+                    "  node_%zu -> node_%d [color=\"" EDGE_WRONG "\", penwidth=2.2, constraint=false];\n",
                     i, next_index);
             }
         } else if (next_index != -1) {
             emit_bad_box_and_link(file, "n", i, next_index,
-                                  "style=\"bold\", color=\"#d66d66\", constraint=false", 0);
+                                  "style=\"bold\", color=\"" EDGE_TO_BAD_BOX "\", constraint=false", 0);
         }
     }
 }
@@ -400,18 +435,18 @@ static void emit_edges_prev(const list_t *list, char *bidir_next, char *bidir_pr
             if (list->arr[(size_t)prev_index].next == (int)i) {
                 if (!bidir_prev[i]) {
                     fprintf(file,
-                        "  node_%d -> node_%zu [dir=both, color=\"#999999\", constraint=false];\n",
+                        "  node_%d -> node_%zu [dir=both, color=\"" EDGE_BASIC "\", constraint=false];\n",
                         prev_index, i);
                     bidir_next[(size_t)prev_index] = 1;
                 }
             } else {
                 fprintf(file,
-                    "  node_%d -> node_%zu [color=\"#6b8fd6\", penwidth=2.2, constraint=false];\n",
+                    "  node_%d -> node_%zu [color=\"" EDGE_WRONG "\", penwidth=2.2, constraint=false];\n",
                     prev_index, i);
             }
         } else if (prev_index != -1) {
             emit_bad_box_and_link(file, "p", i, prev_index,
-                                  "style=\"bold\", color=\"#d66d66\", constraint=false", 1);
+                                  "style=\"bold\", color=\"" EDGE_TO_BAD_BOX "\", constraint=false", 1);
         }
     }
 }
@@ -442,7 +477,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
 
     ver_info_t ver_info_created = list->ver_info;
 
-    fprintf(html, "<pre>\n");
+    fprintf(html, "<pre>\n"); //TODO: colors
 
         fprintf(html,
         "<pre style=\"font-family:'Fira Mono', monospace;"
@@ -451,7 +486,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
         "padding:12px; border-radius:10px;\">\n");
 
     fprintf(html,
-        "<span style=\"color:#6b8fd6;font-weight:700;\">====================[ DUMP #%d ]====================</span>\n",
+        "<span style=\"color:" LIGHT1_BLUE ";font-weight:700;\">====================[ DUMP #%d ]====================</span>\n",
         idx);
     fprintf(html, "Timestamp: <span style=\"color:#8be9fd;\">%s</span>\n", ts);
 
@@ -460,7 +495,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
     else
         fprintf(html, "<span style=\"color:#999;\">(no comment)</span>\n");
     fprintf(html,
-        "<span style=\"color:#6b8fd6;font-weight:700;\">===================================================</span>\n");
+        "<span style=\"color:" LIGHT1_BLUE ";font-weight:700;\">===================================================</span>\n");
 
     fprintf(html, "list ptr : %p\n",  list);
     fprintf(html, "arr  ptr : %p\n",  list ? list->arr      :  NULL);
@@ -482,13 +517,14 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
 
     if (list && list->arr && list->capacity > 0) {
         fprintf(html, "\n");
-        fprintf(html, "IDX   NEXT   PREV        VALUE    MARKS\n");
+        fprintf(html, "IDX   NEXT   PREV        VALUE     MARKS\n");
         fprintf(html, "----  ------ ------  ------------  -----\n");
 
         for (size_t i = 0; i < list->capacity; ++i) {
             int    next = list->arr[i].next;
-            int    prv = list->arr[i].prev;
-            double val = list->arr[i].val;
+            int    prv =  list->arr[i].prev;
+            double val =  list->arr[i].val;
+            if(val == POISON) val = POISON;
 
             char marks[32]; marks[0] = '\0';
             int first = 1;
@@ -498,8 +534,12 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
             if ((int)i == list->tail)     {strcat(marks, first ? "T" : ",T"); first = 0;}
             if ((int)i == list->free_head){strcat(marks, first ? "F" : ",F"); first = 0;}
 
-            fprintf(html, "%-4zu  %-6d %-6d  %-12.6g  %-5s\n",
+            fprintf(html, "%-4zu  %-6d %-6d  %-12.6g  %-5s",
                     i, next, prv, val, marks);
+            if(val == POISON) {
+                fprintf(html, "(POISON)");
+            }
+            fprintf(html, "\n");
         }
     } else {
         fprintf(html, "\n(arr is NULL or capacity == 0)\n");

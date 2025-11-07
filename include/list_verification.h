@@ -4,14 +4,12 @@
 #include <stdbool.h>
 #include "list_info.h"
 
-/* Тип вывода при ошибках */
 typedef enum {
     DUMP_NO   = 0,
     DUMP_TEXT = 1,
     DUMP_IMG  = 2,
 } dump_mode_t;
 
-/* Оба символически отключаются вне VERIFY_DEBUG (через ON_DEBUG) */
 ON_DEBUG(
 error_code list_verify(list_t* list,
                        ver_info_t ver_info,
@@ -26,4 +24,4 @@ void list_dump(list_t* list,
                      const char* fmt, ...);
 )
 
-#endif /* LIST_VERIFICATION_H_INCLUDED */
+#endif
