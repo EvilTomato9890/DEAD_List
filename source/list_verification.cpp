@@ -48,9 +48,9 @@ static const double max_h_in  = 500.0 / dpi;
 #define BASIC_BORDER        BLACK
 #define BASIC_BACK          LIGHT1_BROWN
 #define BAD_BOX_BORDER      LIGHT3_RED
-#define BAD_BOX_BACK        LIGHT2_RED
+#define BAD_BOX_BACK        LIGHT1_RED
 #define EDGE_FREE           LIGHT2_RED
-#define EDGE_TO_BAD_BOX     LIGHT1_RED
+#define EDGE_TO_BAD_BOX     LIGHT3_RED
 #define EDGE_BASIC          LIGHT_GRAY
 #define EDGE_WRONG          RED
 //------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ static void vfmt(char* buf, size_t capacity, const char* fmt, va_list ap) {
 
 static int  dump_make_graphviz_svg(const list_t* list, const char* base_name);
 static void dump_write_html(const list_t* list, ver_info_t ver_info, int idx,
-                            const char* comment, const char* svg_path);
+                            const char* comment, const char* svg_path, bool is_visual);
 
 //------------------------------------------------------------------------------
 
@@ -250,7 +250,7 @@ void list_dump(list_t* list,
         }
     }
 
-    dump_write_html(list, ver_info, dump_idx, comment, svg_path);
+    dump_write_html(list, ver_info, dump_idx, comment, svg_path, is_visual);
 
     LOGGER_INFO("Dump #%ld written%s%s",
                 dump_idx,
@@ -473,12 +473,12 @@ static int run_dot_to_svg(const char *dot_path, const char *svg_path) {
 //==============================================================================
 
 static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int idx,
-                            const char* comment, const char* svg_path) {
+                            const char* comment, const char* svg_path, bool is_visual) {
 
     LOGGER_DEBUG("dump_write_html started");
     FILE* html = list->dump_file;
     if (!html) {
-        LOGGER_ERROR("dump_write_html: can't open dumps/dump.html");
+        LOGGER_ERROR("dump_write_html: can't open dump.html");
         return;
     }
 
@@ -488,7 +488,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
 
     ver_info_t ver_info_created = list->ver_info;
 
-    fprintf(html, "<pre>\n"); //TODO: colors
+    fprintf(html, "<pre>\n"); 
 
         fprintf(html,
         "<pre style=\"font-family:'Fira Mono', monospace;"
@@ -540,10 +540,10 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
             char marks[32]; marks[0] = '\0';
             ssize_t first = 1;
 
-            if (i == 0)                       {strcat(marks, first ? "Z" : ",Z"); first = 0;}
-            if ((ssize_t)i == list->head)     {strcat(marks, first ? "H" : ",H"); first = 0;}
-            if ((ssize_t)i == list->tail)     {strcat(marks, first ? "T" : ",T"); first = 0;}
-            if ((ssize_t)i == list->free_head){strcat(marks, first ? "F" : ",F"); first = 0;}
+            if (i == 0)                       {strcat(marks,         "ZERO"          ); first = 0;}
+            if ((ssize_t)i == list->head)     {strcat(marks, first ? "HEAD" : ",HEAD"); first = 0;}
+            if ((ssize_t)i == list->tail)     {strcat(marks, first ? "TAIL" : ",TAIL"); first = 0;}
+            if ((ssize_t)i == list->free_head){strcat(marks, first ? "FREE" : ",FREE"); first = 0;}
 
             fprintf(html, "%-4zu  %-6ld %-6ld  %-12.6g  %-5s",
                     i, next, prv, val, marks);
@@ -558,7 +558,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
     fprintf(html, "\nSVG: %s\n", svg_path);
     fprintf(html, "</pre>\n");
 
-    if (svg_path) {
+    if (svg_path && is_visual) {
         fprintf(html, "<img src=\"%s\" width=2250/>\n", svg_path);
         /*FILE* img = fopen(svg_path, "rb");
         if (img) {

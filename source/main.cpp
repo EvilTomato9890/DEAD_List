@@ -107,11 +107,6 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
         list_remove(list, 1);
         list_dump(list, VER_INIT, true, "After removes");
 
-        list->arr[6].prev = 10;
-        list->arr[6].next = 4;
-        list_dump(list, VER_INIT, true, "After corrupt free");
-
-
         list->arr[3].prev = 150; // to trigger error in dump
         list_dump(list, VER_INIT, true, "Corrupted dump");
 
@@ -121,6 +116,8 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
         list->arr[3].next = 10000;
         list_dump(list, VER_INIT, true, "Corrupted dump 2");
 
+        list->arr[0].next = 3;
+        list_dump(list, VER_INIT, true, "Corrupted dump 3");
 
 
 /*
