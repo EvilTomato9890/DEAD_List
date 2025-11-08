@@ -86,17 +86,21 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
 
         list_dump(list, VER_INIT, false, "Clear dump"); //todo: не вставлять
 
-        list_insert_after(list, 0, 10.0);
-        list_insert_after(list, 1, 20.0);
-        list_insert_after(list, 2, 30.0);
-        list_dump(list, VER_INIT, true, "After inserts");
+        int insert_idx1 = 0;
+        int insert_idx2 = 1;
+        int insert_idx3 = 2;
+        list_insert_after(list, insert_idx1, 10.0);
+        list_insert_after(list, insert_idx2, 20.0);
+        list_insert_after(list, insert_idx3, 30.0);
+        list_dump(list, VER_INIT, true, "AFTER inserts at idx1: %d, idx2: %d, idx3: %d", insert_idx1, insert_idx2, insert_idx3);
 
         
         list_linearize(list);
         list_dump(list, VER_INIT, true, "After linearize");
 
-        list_insert_after(list, 1, 40.0);
-        list_dump(list, VER_INIT, true, "After insert after index 1");
+        int insert_idx = 1;
+        list_insert_after(list, insert_idx, 40.0);
+        list_dump(list, VER_INIT, true, "AFTER insert index %d", insert_idx);
 
         list_shrink_to_fit(list, false);
         list_dump(list, VER_INIT, true, "After shrink_to_fit");
@@ -106,18 +110,32 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
         list_remove(list, 6);
         list_remove(list, 1);
         list_dump(list, VER_INIT, true, "After removes");
-
+        list_insert_after(list, 11, 15.0);
+        list_insert_after(list, 11, 22.0);
         list->arr[3].prev = 150; // to trigger error in dump
         list_dump(list, VER_INIT, true, "Corrupted dump");
 
-        list->arr[2].next = 4;
+        list->arr[8].next = 5;
         list_insert_auto(list, 1, 42.0);
         
-        list->arr[3].next = 10000;
+        list->arr[3].next = 150;
         list_dump(list, VER_INIT, true, "Corrupted dump 2");
 
         list->arr[0].next = 3;
         list_dump(list, VER_INIT, true, "Corrupted dump 3");
+
+        list->arr[list->capacity].val = 0;
+        list_remove(list, 1);
+
+
+//Замер времени изолировать на 1 ядре
+//Опциии компилятора
+//Замер времени, теммпературы.
+//Сравнение отдельных операций
+// README
+
+//
+
 
 
 /*
@@ -142,3 +160,4 @@ static error_code choose_input_type_and_process(list_t* list, int argc, char* ar
         return ERROR_INCORRECT_ARGS;
     }
 }
+

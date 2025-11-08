@@ -1,11 +1,11 @@
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #0 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:00</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:43</span>
 <span style="color:#ff4d4f;font-weight:700;">Clear dump</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 10
 size     : 8
 head     : 1
@@ -46,11 +46,11 @@ SVG:
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #1 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:00</span>
-<span style="color:#ff4d4f;font-weight:700;">After inserts</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
+<span style="color:#ff4d4f;font-weight:700;">AFTER inserts at idx1: 0, idx2: 1, idx3: 2</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 20
 size     : 11
 head     : 8
@@ -65,7 +65,7 @@ line: 17
 -- Called at (passed ver_info) --
 file: source/main.cpp
 func: choose_input_type_and_process
-line: 92
+line: 95
 
 -- Canaries --
 Expected canary value: 3.73593e+09
@@ -97,16 +97,16 @@ IDX   NEXT   PREV        VALUE     MARKS
 
 SVG: dumps/dump_001.svg
 </pre>
-<img src="dumps/dump_001.svg" width=2250/>
+<img src="dumps/dump_001.svg" max-width=2250/>
 <hr>
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #2 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:00</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
 <span style="color:#ff4d4f;font-weight:700;">After linearize</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 20
 size     : 11
 head     : 1
@@ -121,7 +121,7 @@ line: 17
 -- Called at (passed ver_info) --
 file: source/main.cpp
 func: choose_input_type_and_process
-line: 96
+line: 99
 
 -- Canaries --
 Expected canary value: 3.73593e+09
@@ -153,16 +153,16 @@ IDX   NEXT   PREV        VALUE     MARKS
 
 SVG: dumps/dump_002.svg
 </pre>
-<img src="dumps/dump_002.svg" width=2250/>
+<img src="dumps/dump_002.svg" max-width=2250/>
 <hr>
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #3 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:01</span>
-<span style="color:#ff4d4f;font-weight:700;">After insert after index 1</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
+<span style="color:#ff4d4f;font-weight:700;">AFTER insert index 1</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 20
 size     : 12
 head     : 1
@@ -177,7 +177,7 @@ line: 17
 -- Called at (passed ver_info) --
 file: source/main.cpp
 func: choose_input_type_and_process
-line: 99
+line: 103
 
 -- Canaries --
 Expected canary value: 3.73593e+09
@@ -209,16 +209,16 @@ IDX   NEXT   PREV        VALUE     MARKS
 
 SVG: dumps/dump_003.svg
 </pre>
-<img src="dumps/dump_003.svg" width=2250/>
+<img src="dumps/dump_003.svg" max-width=2250/>
 <hr>
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #4 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:01</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
 <span style="color:#ff4d4f;font-weight:700;">After shrink_to_fit</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 12
 size     : 12
 head     : 1
@@ -233,7 +233,7 @@ line: 17
 -- Called at (passed ver_info) --
 file: source/main.cpp
 func: choose_input_type_and_process
-line: 102
+line: 106
 
 -- Canaries --
 Expected canary value: 3.73593e+09
@@ -257,16 +257,16 @@ IDX   NEXT   PREV        VALUE     MARKS
 
 SVG: dumps/dump_004.svg
 </pre>
-<img src="dumps/dump_004.svg" width=2250/>
+<img src="dumps/dump_004.svg" max-width=2250/>
 <hr>
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #5 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:01</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
 <span style="color:#ff4d4f;font-weight:700;">After removes</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 12
 size     : 9
 head     : 2
@@ -281,7 +281,7 @@ line: 17
 -- Called at (passed ver_info) --
 file: source/main.cpp
 func: choose_input_type_and_process
-line: 108
+line: 112
 
 -- Canaries --
 Expected canary value: 3.73593e+09
@@ -305,21 +305,21 @@ IDX   NEXT   PREV        VALUE     MARKS
 
 SVG: dumps/dump_005.svg
 </pre>
-<img src="dumps/dump_005.svg" width=2250/>
+<img src="dumps/dump_005.svg" max-width=2250/>
 <hr>
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #6 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:01</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
 <span style="color:#ff4d4f;font-weight:700;">Corrupted dump</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 12
-size     : 9
+size     : 11
 head     : 2
-tail     : 11
-free_head: 1
+tail     : 1
+free_head: 5
 
 -- Created at (list ver_info) --
 file: source/main.cpp
@@ -329,7 +329,7 @@ line: 17
 -- Called at (passed ver_info) --
 file: source/main.cpp
 func: choose_input_type_and_process
-line: 111
+line: 116
 
 -- Canaries --
 Expected canary value: 3.73593e+09
@@ -338,37 +338,37 @@ right: 3.73593e+09
 
 IDX   NEXT   PREV        VALUE     MARKS
 ----  ------ ------  ------------  -----
-0     2      11      3.73593e+09   ZERO 
-1     6      -1      -100          FREE (POISON)
+0     2      1       3.73593e+09   ZERO 
+1     0      6       15            TAIL 
 2     3      0       40            HEAD 
 3     4      150     2                  
 4     7      3       20                 
-5     -1     -1      -100               (POISON)
-6     5      -1      -100               (POISON)
+5     -1     -1      -100          FREE (POISON)
+6     1      11      22                 
 7     8      4       5                  
 8     9      7       4                  
 9     10     8       5                  
 10    11     9       4                  
-11    0      10      3             TAIL 
+11    6      10      3                  
 
 SVG: dumps/dump_006.svg
 </pre>
-<img src="dumps/dump_006.svg" width=2250/>
+<img src="dumps/dump_006.svg" max-width=2250/>
 <hr>
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #7 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:01</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
 <span style="color:#ff4d4f;font-weight:700;">List_verify: Corrupted chain
- Comment: Before insert of 42.000000 at index 4</span>
+ Comment: Before insert of 42.000000 at index 3</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 12
-size     : 9
+size     : 11
 head     : 2
-tail     : 11
-free_head: 1
+tail     : 1
+free_head: 5
 
 -- Created at (list ver_info) --
 file: source/main.cpp
@@ -387,36 +387,36 @@ right: 3.73593e+09
 
 IDX   NEXT   PREV        VALUE     MARKS
 ----  ------ ------  ------------  -----
-0     2      11      3.73593e+09   ZERO 
-1     6      -1      -100          FREE (POISON)
-2     4      0       40            HEAD 
+0     2      1       3.73593e+09   ZERO 
+1     0      6       15            TAIL 
+2     3      0       40            HEAD 
 3     4      150     2                  
 4     7      3       20                 
-5     -1     -1      -100               (POISON)
-6     5      -1      -100               (POISON)
+5     -1     -1      -100          FREE (POISON)
+6     1      11      22                 
 7     8      4       5                  
-8     9      7       4                  
+8     5      7       4                  
 9     10     8       5                  
 10    11     9       4                  
-11    0      10      3             TAIL 
+11    6      10      3                  
 
 SVG: dumps/dump_007.svg
 </pre>
-<img src="dumps/dump_007.svg" width=2250/>
+<img src="dumps/dump_007.svg" max-width=2250/>
 <hr>
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #8 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:01</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
 <span style="color:#ff4d4f;font-weight:700;">Corrupted dump 2</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 12
-size     : 9
+size     : 11
 head     : 2
-tail     : 11
-free_head: 1
+tail     : 1
+free_head: 5
 
 -- Created at (list ver_info) --
 file: source/main.cpp
@@ -426,7 +426,7 @@ line: 17
 -- Called at (passed ver_info) --
 file: source/main.cpp
 func: choose_input_type_and_process
-line: 117
+line: 122
 
 -- Canaries --
 Expected canary value: 3.73593e+09
@@ -435,36 +435,36 @@ right: 3.73593e+09
 
 IDX   NEXT   PREV        VALUE     MARKS
 ----  ------ ------  ------------  -----
-0     2      11      3.73593e+09   ZERO 
-1     6      -1      -100          FREE (POISON)
-2     4      0       40            HEAD 
-3     10000  150     2                  
+0     2      1       3.73593e+09   ZERO 
+1     0      6       15            TAIL 
+2     3      0       40            HEAD 
+3     150    150     2                  
 4     7      3       20                 
-5     -1     -1      -100               (POISON)
-6     5      -1      -100               (POISON)
+5     -1     -1      -100          FREE (POISON)
+6     1      11      22                 
 7     8      4       5                  
-8     9      7       4                  
+8     5      7       4                  
 9     10     8       5                  
 10    11     9       4                  
-11    0      10      3             TAIL 
+11    6      10      3                  
 
 SVG: dumps/dump_008.svg
 </pre>
-<img src="dumps/dump_008.svg" width=2250/>
+<img src="dumps/dump_008.svg" max-width=2250/>
 <hr>
 <pre>
 <pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
 <span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #9 ]====================</span>
-Timestamp: <span style="color:#8be9fd;">2025-11-08 08:10:01</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
 <span style="color:#ff4d4f;font-weight:700;">Corrupted dump 3</span>
 <span style="color:#6b8fd6;font-weight:700;">===================================================</span>
-list ptr : 0x7ffeac415670
-arr  ptr : 0x605245139b20
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
 capacity : 12
-size     : 9
+size     : 11
 head     : 2
-tail     : 11
-free_head: 1
+tail     : 1
+free_head: 5
 
 -- Created at (list ver_info) --
 file: source/main.cpp
@@ -474,7 +474,7 @@ line: 17
 -- Called at (passed ver_info) --
 file: source/main.cpp
 func: choose_input_type_and_process
-line: 120
+line: 125
 
 -- Canaries --
 Expected canary value: 3.73593e+09
@@ -483,20 +483,69 @@ right: 3.73593e+09
 
 IDX   NEXT   PREV        VALUE     MARKS
 ----  ------ ------  ------------  -----
-0     3      11      3.73593e+09   ZERO 
-1     6      -1      -100          FREE (POISON)
-2     4      0       40            HEAD 
-3     10000  150     2                  
+0     3      1       3.73593e+09   ZERO 
+1     0      6       15            TAIL 
+2     3      0       40            HEAD 
+3     150    150     2                  
 4     7      3       20                 
-5     -1     -1      -100               (POISON)
-6     5      -1      -100               (POISON)
+5     -1     -1      -100          FREE (POISON)
+6     1      11      22                 
 7     8      4       5                  
-8     9      7       4                  
+8     5      7       4                  
 9     10     8       5                  
 10    11     9       4                  
-11    0      10      3             TAIL 
+11    6      10      3                  
 
 SVG: dumps/dump_009.svg
 </pre>
-<img src="dumps/dump_009.svg" width=2250/>
+<img src="dumps/dump_009.svg" max-width=2250/>
+<hr>
+<pre>
+<pre style="font-family:'Fira Mono', monospace;font-size:16px; line-height:1.28;background:#0b0e14; color:#e6e1cf;padding:12px; border-radius:10px;">
+<span style="color:#6b8fd6;font-weight:700;">====================[ DUMP #10 ]====================</span>
+Timestamp: <span style="color:#8be9fd;">2025-11-08 13:27:44</span>
+<span style="color:#ff4d4f;font-weight:700;">List_verify: Corrupted chain
+ Comment: Before removal at index 1</span>
+<span style="color:#6b8fd6;font-weight:700;">===================================================</span>
+list ptr : 0x7ffe1b6c01c0
+arr  ptr : 0x56eb0fe5fb20
+capacity : 12
+size     : 11
+head     : 2
+tail     : 1
+free_head: 5
+
+-- Created at (list ver_info) --
+file: source/main.cpp
+func: main
+line: 17
+
+-- Called at (passed ver_info) --
+file: source/list_operations.cpp
+func: list_remove
+line: 274
+
+-- Canaries --
+Expected canary value: 3.73593e+09
+left : 3.73593e+09
+right: 0
+
+IDX   NEXT   PREV        VALUE     MARKS
+----  ------ ------  ------------  -----
+0     3      1       3.73593e+09   ZERO 
+1     0      6       15            TAIL 
+2     3      0       40            HEAD 
+3     150    150     2                  
+4     7      3       20                 
+5     -1     -1      -100          FREE (POISON)
+6     1      11      22                 
+7     8      4       5                  
+8     5      7       4                  
+9     10     8       5                  
+10    11     9       4                  
+11    6      10      3                  
+
+SVG: dumps/dump_010.svg
+</pre>
+<img src="dumps/dump_010.svg" max-width=2250/>
 <hr>

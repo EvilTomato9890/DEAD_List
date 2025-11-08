@@ -186,7 +186,8 @@ error_code list_verify(list_t* list,
     error_code error = 0;
 
     char comment[1024];
-    va_list ap; va_start(ap, fmt);
+    va_list ap = {}; 
+    va_start(ap, fmt);
     vfmt(comment, sizeof(comment), fmt, ap);
     va_end(ap);
 
@@ -263,7 +264,7 @@ void list_dump(list_t* list,
     system("mkdir -p dumps");
 
     char comment[1024];
-    va_list ap;
+    va_list ap = {};
     va_start(ap, fmt);
     vfmt(comment, sizeof(comment), fmt, ap);
     va_end(ap);
@@ -597,7 +598,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
     fprintf(html, "</pre>\n");
 
     if (svg_path && is_visual) {
-        fprintf(html, "<img src=\"%s\" width=2250/>\n", svg_path);
+        fprintf(html, "<img src=\"%s\" max-width=2250/>\n", svg_path);
         /*FILE* img = fopen(svg_path, "rb");
         if (img) {
             char buf[4096]; size_t n;
