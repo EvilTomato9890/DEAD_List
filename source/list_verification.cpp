@@ -186,7 +186,7 @@ error_code list_verify(list_t* list,
     error_code error = 0;
 
     char comment[1024];
-    va_list ap; va_start(ap, fmt);
+    va_list ap = {}; va_start(ap, fmt);
     vfmt(comment, sizeof(comment), fmt, ap);
     va_end(ap);
 
@@ -263,7 +263,7 @@ void list_dump(list_t* list,
     system("mkdir -p dumps");
 
     char comment[1024];
-    va_list ap;
+    va_list ap = {};
     va_start(ap, fmt);
     vfmt(comment, sizeof(comment), fmt, ap);
     va_end(ap);
