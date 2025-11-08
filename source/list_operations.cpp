@@ -516,9 +516,9 @@ error_code list_shrink_to_fit(list_t* list, bool keep_growth) {
         return error;
     }
     list->arr = new_block;
+    list->arr[0].val       = CANARY_NUM;
 
     ON_DEBUG(
-        list->arr[0].val       = CANARY_NUM;
         list->arr[target].val  = CANARY_NUM;
     )
 
