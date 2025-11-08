@@ -226,7 +226,7 @@ ssize_t list_insert_auto(list_t* list, ssize_t insert_index, double val) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
 
-    if (insert_index < 0 || insert_index > list->size) {
+    if (insert_index < 0 || (size_t)insert_index > list->size) {
         LOGGER_ERROR("list_insert_auto: insert_index %d out of range", insert_index);
         return -1;
     }
@@ -312,7 +312,7 @@ error_code list_remove_auto(list_t* list, ssize_t remove_index) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Removing logical index %d", remove_index);
-    if (remove_index < 0 || remove_index >= list->size - 1) {
+    if (remove_index < 0 || (size_t)remove_index >= list->size - 1) {
         LOGGER_ERROR("list_remove_auto: remove_index %d out of range", remove_index);
         return ERROR_INCORRECT_INDEX;
     }

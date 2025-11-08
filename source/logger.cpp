@@ -47,10 +47,11 @@ static void logger_time_string(char *buff, size_t n) {
 static const char* logger_color_on(const logger_mode_type mode) {
     if (!color_enabled) return "";
     switch (mode) {
-        case LOGGER_MODE_DEBUG:   return CYAN;
-        case LOGGER_MODE_INFO:    return BLUE; 
-        case LOGGER_MODE_WARNING: return YELLOW;
-        case LOGGER_MODE_ERROR:   return RED; 
+        case LOGGER_MODE_DEBUG:   return CYAN_CONSOLE;
+        case LOGGER_MODE_INFO:    return BLUE_CONSOLE; 
+        case LOGGER_MODE_WARNING: return YELLOW_CONSOLE;
+        case LOGGER_MODE_ERROR:   return RED_CONSOLE;
+
         default:                  return "";
     }
 }
@@ -95,7 +96,7 @@ void logger_log_message(const logger_mode_type mode,
     } else {
         const char *color_on  = logger_color_on(mode);
         fprintf(output_stream, "[%s] %s:%d. %s%s%s. ",
-            Time, file, line, color_on, logger_mode_string(mode), RESET);
+            Time, file, line, color_on, logger_mode_string(mode), RESET_CONSOLE);
     }
 
     va_list ap;

@@ -23,12 +23,16 @@ static const double max_h_in  = 500.0 / dpi;
 #define LIGHT2_RED   "#d88d88"
 #define LIGHT3_RED   "#d66d66"
 #define RED          "#ff0000"
-#define CIAN         "#5aa99b"
+#define LIGHT_RED    "#ff4d4f"
+#define CYAN         "#5aa99b"
+#define LIGHT_CYAN   "#8be9fd"
 #define LIGHT_CIAN   "#e9fbf5"
 #define PURPLE       "#8e6bd6"
 #define LIGHT_PURPLE "#f1eafd"
-#define BLACK        "#000000"
-#define LIGHT_BROWN  "#fff3e0"
+#define BLACK        "#000000"  
+#define DARK_BLACK   "#0b0e14"
+#define LIGHT1_BROWN "#fff3e0"
+#define LIGHT2_BROWN "#e6e1cf"
 #define LIGHT_GRAY   "#999999"
 
 //==============================================================================
@@ -38,19 +42,26 @@ static const double max_h_in  = 500.0 / dpi;
 #define FREE_NODE_BORDER    LIGHT3_RED
 #define FREE_NODE_BACK      LIGHT1_RED
 #define HEAD_BACK           LIGHT_CIAN
-#define HEAD_BORDER         CIAN
+#define HEAD_BORDER         CYAN
 #define TAIL_BACK           LIGHT_PURPLE
 #define TAIL_BORDER         PURPLE
 #define BASIC_BORDER        BLACK
-#define BASIC_BACK          LIGHT_BROWN
+#define BASIC_BACK          LIGHT1_BROWN
 #define BAD_BOX_BORDER      LIGHT3_RED
 #define BAD_BOX_BACK        LIGHT2_RED
 #define EDGE_FREE           LIGHT2_RED
 #define EDGE_TO_BAD_BOX     LIGHT1_RED
 #define EDGE_BASIC          LIGHT_GRAY
 #define EDGE_WRONG          RED
+//------------------------------------------------------------------------------
+#define HTML_BACKGROUND     DARK_BLACK
+#define HTML_TEXT           LIGHT2_BROWN
+#define HTML_TIME           LIGHT_CYAN
+#define HTML_REASON         LIGHT_RED
+#define HTML_BORDER         LIGHT1_BLUE
 
 //==============================================================================
+
 static void vfmt(char* buf, size_t capacity, const char* fmt, va_list ap) {
     if (!fmt) { if (capacity) buf[0] = '\0'; return; }
     vsnprintf(buf, capacity, fmt, ap);
@@ -66,7 +77,7 @@ static void emit_nodes(const list_t *list, FILE *file);
 static void emit_invis_rank_edges(size_t capacity, FILE *file);
 
 static void emit_bad_box_and_link(
-    FILE *file, const char *box_tag, size_t owner_index, int bad_index,
+    FILE *file, const char *box_tag, size_t owner_index, ssize_t bad_index,
     const char *edge_style, int reverse_dir);
 
 static void emit_edges_free(const list_t *list, FILE *file);
@@ -77,7 +88,7 @@ static int  run_dot_to_svg(const char *dot_path, const char *svg_path);
 
 //==============================================================================
 
-static inline int idx_ok(int idx, size_t capacity) {
+static inline int idx_ok(ssize_t idx, size_t capacity) {
     return idx >= 0 && (size_t)idx < capacity;
 }
 
@@ -88,20 +99,20 @@ static error_code validate_main_chain(const list_t* list, size_t capacity, const
     char* seen = (char*)calloc(capacity, 1);
     if (!seen) { LOGGER_ERROR("alloc failed"); return ERROR_MEM_ALLOC; }
 
-    int curr = list->head;
+    ssize_t curr = list->head;
     size_t steps = 0;
-    while (idx_ok(curr, capacity) && curr > 0 && !seen[(size_t)curr]) {
-        seen[(size_t)curr] = 1;
-        int next = list->arr[(size_t)curr].next;
+    while (idx_ok(curr, capacity) && curr > 0 && !seen[curr]) {
+        seen[curr] = 1;
+        ssize_t next = list->arr[curr].next;
 
         if (idx_ok(next, capacity)) {
-            if (list->arr[(size_t)next].prev != curr) {
-                LOGGER_ERROR("mismatch prev for %d <- %d", next, curr);
+            if (list->arr[next].prev != curr) {
+                LOGGER_ERROR("mismatch prev for %ld <- %ld", next, curr);
                 *error_description = "mismatch in main chain";
                 error |= ERROR_INVALID_STRUCTURE;
             }
         } else if (next != -1) {
-            LOGGER_ERROR("next node at %d -> %d not in chain", curr, next);
+            LOGGER_ERROR("next node at %ld -> %ld not in chain", curr, next);
             *error_description = "next node not in main chain";
             error |= ERROR_INVALID_STRUCTURE;
             break;
@@ -125,14 +136,14 @@ static error_code validate_free_chain(const list_t* list, size_t capacity, const
     char* seen = (char*)calloc(capacity, 1);
     if (!seen) { LOGGER_ERROR("alloc failed (free)"); return ERROR_MEM_ALLOC; }
 
-    int curr = list->free_head;
+    ssize_t curr = list->free_head;
     size_t steps = 0;
-    while (idx_ok(curr, capacity) && !seen[(size_t)curr]) {
-        seen[(size_t)curr] = 1;
-        int next = list->arr[(size_t)curr].next;
+    while (idx_ok(curr, capacity) && curr > 0 && !seen[curr]) {
+        seen[curr] = 1;
+        ssize_t next = list->arr[curr].next;
 
         if (next != -1 && !idx_ok(next, capacity)) {
-            LOGGER_ERROR("free next not in chain %d -> %d", curr, next);
+            LOGGER_ERROR("free next not in chain %ld -> %ld", curr, next);
             *error_description = "free next node not in chain";
             error |= ERROR_INVALID_STRUCTURE;
             break;
@@ -188,12 +199,12 @@ error_code list_verify(list_t* list,
         error |= ERROR_BIG_SIZE;
     }
     if (!idx_ok(list->head, capacity)) {
-        LOGGER_WARNING("head out of bounds: %d", list->head);
+        LOGGER_WARNING("head out of bounds: %ld", list->head);
         error_description = "head out of bounds";
         error |= ERROR_INVALID_STRUCTURE;
     }
     if (list->free_head != -1 && !idx_ok(list->free_head, capacity)) {
-        LOGGER_WARNING("free_head out of bounds: %d", list->free_head);
+        LOGGER_WARNING("free_head out of bounds: %ld", list->free_head);
         error_description = "free_head out of bounds";
         error |= ERROR_INVALID_STRUCTURE;
     }
@@ -241,7 +252,7 @@ void list_dump(list_t* list,
 
     dump_write_html(list, ver_info, dump_idx, comment, svg_path);
 
-    LOGGER_INFO("Dump #%d written%s%s",
+    LOGGER_INFO("Dump #%ld written%s%s",
                 dump_idx,
                 svg_path[0] ? " with SVG: " : "",
                 svg_path[0] ? svg_path : "");
@@ -273,7 +284,7 @@ int dump_make_graphviz_svg(const list_t* list, const char* base_name) {
 
     fprintf(file,
         "  node_0[shape=record,"
-        "label=\"ind: 0 | val: %g | { prev: %d | next: %d }\"," 
+        "label=\"ind: 0 | val: %g | { prev: %ld | next: %ld }\"," 
         "color=\"" ELEM_0_BORDER "\",style=\"filled,bold,rounded\",fillcolor=\"" ELEM_0_BACK "\"];\n",
         list->arr[0].val, list->arr[0].prev, list->arr[0].next);
 
@@ -299,7 +310,7 @@ int dump_make_graphviz_svg(const list_t* list, const char* base_name) {
 
     fprintf(file,
         "  node_free [label=free_head,color=\"" FREE_NODE_BORDER  "\",shape=rectangle,style=\"filled,rounded\",fillcolor=\"" FREE_NODE_BACK "\"];\n");
-    fprintf(file, "  node_free -> node_%d [color=\"" EDGE_FREE "\", style=dashed, constraint=false];\n", list->free_head);
+    fprintf(file, "  node_free -> node_%ld [color=\"" EDGE_FREE "\", style=dashed, constraint=false];\n", list->free_head);
 
     fprintf(file, "}\n");
     fclose(file);
@@ -312,36 +323,36 @@ int dump_make_graphviz_svg(const list_t* list, const char* base_name) {
 static void emit_nodes(const list_t *list, FILE *file) {
     const size_t capacity = list->capacity;
     for (size_t i = 1; i < capacity; ++i) {
-        const int next_index  = list->arr[i].next;
-        const int prev_index  = list->arr[i].prev;
+        const ssize_t next_index  = list->arr[i].next;
+        const ssize_t prev_index  = list->arr[i].prev;
         const double val      = list->arr[i].val;
 
-        const int is_free = (prev_index == -1 || val == POISON);
-        const int is_head = (i == (size_t)list->head);
-        const int is_tail = (i == (size_t)list->tail);
+        const ssize_t is_free = (prev_index == -1 || val == POISON);
+        const ssize_t is_head = (i == (size_t)list->head);
+        const ssize_t is_tail = (i == (size_t)list->tail);
 
         if (is_free) {
             fprintf(file,
                 "  node_%zu[shape=record,"
-                "label=\" ind: %zu | val: %g | { prev: %d | next: %d } \","
+                "label=\" ind: %zu | val: %g | { prev: %ld | next: %ld } \","
                 "style=\"filled,rounded\",color=\"" FREE_NODE_BORDER "\",fillcolor=\"" FREE_NODE_BACK "\"];\n",
                 i, i, val, prev_index, next_index);
         } else if (is_head) {
             fprintf(file,
                 "  node_%zu[shape=record,"
-                "label=\" ind: %zu (HEAD) | val: %g | { prev: %d | next: %d } \","
+                "label=\" ind: %zu (HEAD) | val: %g | { prev: %ld | next: %ld } \","
                 "color=\"" HEAD_BORDER "\",fillcolor=\"" HEAD_BACK "\"];\n",
                 i, i, val, prev_index, next_index);
         } else if (is_tail) {
             fprintf(file,
                 "  node_%zu[shape=record,"
-                "label=\" ind: %zu (TAIL) | val: %g | { prev: %d | next: %d } \","
+                "label=\" ind: %zu (TAIL) | val: %g | { prev: %ld | next: %ld } \","
                 "color=\"" TAIL_BORDER "\",fillcolor=\"" TAIL_BACK "\"];\n",
                 i, i, val, prev_index, next_index);
         } else {
             fprintf(file,
                 "  node_%zu[shape=record,"
-                "label=\" ind: %zu | val: %g | { prev: %d | next: %d } \","
+                "label=\" ind: %zu | val: %g | { prev: %ld | next: %ld } \","
                 "color=\"" BASIC_BORDER "\",fillcolor=\"" BASIC_BACK "\"];\n",
                 i, i, val, prev_index, next_index);
         }
@@ -355,11 +366,11 @@ static void emit_invis_rank_edges(size_t capacity, FILE *file) {
 }
 
 static void emit_bad_box_and_link(
-    FILE *file, const char *box_tag, size_t owner_index, int bad_index,
+    FILE *file, const char *box_tag, size_t owner_index, ssize_t bad_index,
     const char *edge_style, int reverse_dir)
 {
     fprintf(file,
-        "  node_bad_%s_%zu [label=\"idx %d\\n(N/A)\",shape=rectangle,"
+        "  node_bad_%s_%zu [label=\"idx %ld\\n(N/A)\",shape=rectangle,"
         "style=\"filled,rounded\",color=\"" BAD_BOX_BORDER "\",fillcolor=\"" BAD_BOX_BACK "\"];\n",
         box_tag, owner_index, bad_index);
 
@@ -383,13 +394,13 @@ static void emit_bad_box_and_link(
 static void emit_edges_free(const list_t *list, FILE *file) {
     const size_t capacity = list->capacity;
     for (size_t i = 0; i < capacity; ++i) {
-        const int prev_index = list->arr[i].prev;
+        const ssize_t prev_index = list->arr[i].prev;
         if (prev_index != -1) continue; 
 
-        const int next_index = list->arr[i].next;
+        const ssize_t next_index = list->arr[i].next;
         if (next_index >= 0 && (size_t)next_index < capacity) {
             fprintf(file,
-                "  node_%zu -> node_%d [color=\"" EDGE_FREE "\", style=dashed, constraint=false];\n",
+                "  node_%zu -> node_%ld [color=\"" EDGE_FREE "\", style=dashed, constraint=false];\n",
                 i, next_index);
         } else if (next_index != -1) {
             emit_bad_box_and_link(file, "f", i, next_index,
@@ -401,21 +412,21 @@ static void emit_edges_free(const list_t *list, FILE *file) {
 static void emit_edges_next(const list_t *list, char *bidir_next, char *bidir_prev, FILE *file) {
     const size_t capacity = list->capacity;
     for (size_t i = 0; i < capacity; ++i) {
-        const int prev_index = list->arr[i].prev;
+        const ssize_t prev_index = list->arr[i].prev;
         if (prev_index == -1) continue; 
 
-        const int next_index = list->arr[i].next;
+        const ssize_t next_index = list->arr[i].next;
         if (next_index >= 0 && (size_t)next_index < capacity) {
-            if (list->arr[(size_t)next_index].prev == (int)i) {
+            if (list->arr[next_index].prev == (ssize_t)i) {
                 if (!bidir_next[i]) {
                     fprintf(file,
-                        "  node_%zu -> node_%d [dir=both, color=\"" EDGE_BASIC "\", constraint=false];\n",
+                        "  node_%zu -> node_%ld [dir=both, color=\"" EDGE_BASIC "\", constraint=false];\n",
                         i, next_index);
-                    bidir_prev[(size_t)next_index] = 1;
+                    bidir_prev[next_index] = 1;
                 }
             } else {
                 fprintf(file,
-                    "  node_%zu -> node_%d [color=\"" EDGE_WRONG "\", penwidth=2.2, constraint=false];\n",
+                    "  node_%zu -> node_%ld [color=\"" EDGE_WRONG "\", penwidth=2.2, constraint=false];\n",
                     i, next_index);
             }
         } else if (next_index != -1) {
@@ -428,20 +439,20 @@ static void emit_edges_next(const list_t *list, char *bidir_next, char *bidir_pr
 static void emit_edges_prev(const list_t *list, char *bidir_next, char *bidir_prev, FILE *file) {
     const size_t capacity = list->capacity;
     for (size_t i = 0; i < capacity; ++i) {
-        const int prev_index = list->arr[i].prev;
+        const ssize_t prev_index = list->arr[i].prev;
         if (prev_index == -1) continue; 
 
         if (prev_index >= 0 && (size_t)prev_index < capacity) {
-            if (list->arr[(size_t)prev_index].next == (int)i) {
+            if (list->arr[prev_index].next == (ssize_t)i) {
                 if (!bidir_prev[i]) {
                     fprintf(file,
-                        "  node_%d -> node_%zu [dir=both, color=\"" EDGE_BASIC "\", constraint=false];\n",
+                        "  node_%ld -> node_%zu [dir=both, color=\"" EDGE_BASIC "\", constraint=false];\n",
                         prev_index, i);
-                    bidir_next[(size_t)prev_index] = 1;
+                    bidir_next[prev_index] = 1;
                 }
             } else {
                 fprintf(file,
-                    "  node_%d -> node_%zu [color=\"" EDGE_WRONG "\", penwidth=2.2, constraint=false];\n",
+                    "  node_%ld -> node_%zu [color=\"" EDGE_WRONG "\", penwidth=2.2, constraint=false];\n",
                     prev_index, i);
             }
         } else if (prev_index != -1) {
@@ -482,28 +493,28 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
         fprintf(html,
         "<pre style=\"font-family:'Fira Mono', monospace;"
         "font-size:16px; line-height:1.28;"
-        "background:#0b0e14; color:#e6e1cf;"
+        "background:" HTML_BACKGROUND "; color:" HTML_TEXT ";"
         "padding:12px; border-radius:10px;\">\n");
 
     fprintf(html,
-        "<span style=\"color:" LIGHT1_BLUE ";font-weight:700;\">====================[ DUMP #%d ]====================</span>\n",
+        "<span style=\"color:" HTML_BORDER ";font-weight:700;\">====================[ DUMP #%d ]====================</span>\n",
         idx);
-    fprintf(html, "Timestamp: <span style=\"color:#8be9fd;\">%s</span>\n", ts);
+    fprintf(html, "Timestamp: <span style=\"color:" HTML_TIME ";\">%s</span>\n", ts);
 
-    if (comment && *comment)
-        fprintf(html, "<span style=\"color:#ff4d4f;font-weight:700;\">%s</span>\n", comment);
+    if (comment && comment[0] != '\0')
+        fprintf(html, "<span style=\"color:" HTML_REASON ";font-weight:700;\">%s</span>\n", comment);
     else
         fprintf(html, "<span style=\"color:#999;\">(no comment)</span>\n");
     fprintf(html,
-        "<span style=\"color:" LIGHT1_BLUE ";font-weight:700;\">===================================================</span>\n");
+        "<span style=\"color:" HTML_BORDER ";font-weight:700;\">===================================================</span>\n");
 
     fprintf(html, "list ptr : %p\n",  list);
     fprintf(html, "arr  ptr : %p\n",  list ? list->arr      :  NULL);
     fprintf(html, "capacity : %zu\n", list ? list->capacity :  0);
     fprintf(html, "size     : %zu\n", list ? list->size     :  0);
-    fprintf(html, "head     : %d\n",  list ? list->head     : -1);
-    fprintf(html, "tail     : %d\n",  list ? list->tail     : -1);
-    fprintf(html, "free_head: %d\n",  list ? list->free_head: -1);
+    fprintf(html, "head     : %ld\n",  list ? list->head     : -1);
+    fprintf(html, "tail     : %ld\n",  list ? list->tail     : -1);
+    fprintf(html, "free_head: %ld\n",  list ? list->free_head: -1);
 
     fprintf(html, "\n-- Created at (list ver_info) --\n");
     fprintf(html, "file: %s\n",   ver_info_created.file);
@@ -521,20 +532,20 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
         fprintf(html, "----  ------ ------  ------------  -----\n");
 
         for (size_t i = 0; i < list->capacity; ++i) {
-            int    next = list->arr[i].next;
-            int    prv =  list->arr[i].prev;
-            double val =  list->arr[i].val;
+            ssize_t next =  list->arr[i].next;
+            ssize_t  prv =  list->arr[i].prev;
+            double   val =  list->arr[i].val;
             if(val == POISON) val = POISON;
 
             char marks[32]; marks[0] = '\0';
-            int first = 1;
+            ssize_t first = 1;
 
-            if (i == 0)                   {strcat(marks, first ? "Z" : ",Z"); first = 0;}
-            if ((int)i == list->head)     {strcat(marks, first ? "H" : ",H"); first = 0;}
-            if ((int)i == list->tail)     {strcat(marks, first ? "T" : ",T"); first = 0;}
-            if ((int)i == list->free_head){strcat(marks, first ? "F" : ",F"); first = 0;}
+            if (i == 0)                       {strcat(marks, first ? "Z" : ",Z"); first = 0;}
+            if ((ssize_t)i == list->head)     {strcat(marks, first ? "H" : ",H"); first = 0;}
+            if ((ssize_t)i == list->tail)     {strcat(marks, first ? "T" : ",T"); first = 0;}
+            if ((ssize_t)i == list->free_head){strcat(marks, first ? "F" : ",F"); first = 0;}
 
-            fprintf(html, "%-4zu  %-6d %-6d  %-12.6g  %-5s",
+            fprintf(html, "%-4zu  %-6ld %-6ld  %-12.6g  %-5s",
                     i, next, prv, val, marks);
             if(val == POISON) {
                 fprintf(html, "(POISON)");
