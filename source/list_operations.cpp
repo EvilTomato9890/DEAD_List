@@ -54,9 +54,8 @@ static error_code list_recalloc(list_t* list, size_t new_capacity) {
         return ERROR_MEM_ALLOC;
     }
     list->arr = new_block;
-
+    new_block[0].val = CANARY_NUM;
     ON_DEBUG(
-        new_block[0].val            = CANARY_NUM;
         new_block[new_capacity].val = CANARY_NUM;
     )
 
@@ -108,7 +107,7 @@ error_code list_init(list_t* list_return, size_t capacity ON_DEBUG(, ver_info_t 
         capacity = MIN_LIST_SIZE;
     }
 
-    size_t alloc_count = capacity + 1 ON_DEBUG(+ 1);
+    size_t alloc_count = capacity ON_DEBUG(+ 1); 
     LOGGER_DEBUG("Allocating %lu nodes", alloc_count);
     node_t* arr = (node_t*)(calloc(alloc_count, sizeof(node_t)));
     if (arr == nullptr) {
@@ -127,10 +126,11 @@ error_code list_init(list_t* list_return, size_t capacity ON_DEBUG(, ver_info_t 
 
     arr[0].next = 0;
     arr[0].prev = 0;
-    arr[0].val  = CANARY_NUM;
+    arr[0].val = CANARY_NUM;
+
     ON_DEBUG(
         arr[capacity].val = CANARY_NUM;
-    )
+    ) 
 
     list_t list = {};
     list.arr       = arr;
@@ -241,7 +241,8 @@ ssize_t list_insert_before(list_t* list, ssize_t insert_index, double val) {
     HARD_ASSERT(list      != nullptr, "list is nullptr");
     HARD_ASSERT(list->arr != nullptr, "arr is nullptr");
     LOGGER_DEBUG("Inserting before physical index %d", insert_index);
-    if (insert_index <= 0 || (size_t)(insert_index) >= list->capacity) {
+
+    if (insert_index < 0 || (size_t)(insert_index) >= list->capacity) {
         LOGGER_ERROR("list_insert_before: insert_index %d invalid", insert_index);
         return -1;
     }

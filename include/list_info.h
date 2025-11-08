@@ -9,7 +9,7 @@ static const size_t MIN_LIST_SIZE    = 3;
 static const int    POISON           = -100;
 static const float  REDUCTION_FACTOR = 4.0f;
 static const float  GROWTH_FACTOR    = 2.0f;
-static const float  CANARY_NUM       = 10101.0f;
+static const float  CANARY_NUM       = 0xDEADBEEF;
 
 
 #ifdef VERIFY_DEBUG

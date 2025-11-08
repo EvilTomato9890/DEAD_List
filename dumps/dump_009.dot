@@ -4,7 +4,7 @@ digraph G{
   nodesep=0.9;
   ranksep=0.75;
   node [fontname="Fira Mono",shape=record,style="filled,rounded",fontsize=11];
-  node_0[shape=record,label="ind: 0 | val: 10101 | { prev: 11 | next: 3 }",color="#6b8fd6",style="filled,bold,rounded",fillcolor="#e9f2ff"];
+  node_0[shape=record,label="ind: 0 | val: 3.73593e+09 | { prev: 11 | next: 3 }",color="#6b8fd6",style="filled,bold,rounded",fillcolor="#e9f2ff"];
   node_1[shape=record,label=" ind: 1 | val: -100 | { prev: -1 | next: 6 } ",style="filled,rounded",color="#d66d66",fillcolor="#ffecec"];
   node_2[shape=record,label=" ind: 2 (HEAD) | val: 40 | { prev: 0 | next: 4 } ",color="#5aa99b",fillcolor="#e9fbf5"];
   node_3[shape=record,label=" ind: 3 | val: 2 | { prev: 150 | next: 10000 } ",color="#000000",fillcolor="#fff3e0"];

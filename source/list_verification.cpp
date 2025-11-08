@@ -9,8 +9,27 @@
 #include <string.h>
 #include <time.h>
 
-//#ifdef VERIFY_DEBUG
-//цвета то collors
+#ifndef VERIFY_DEBUG
+
+#include "list_info.h"
+
+error_code list_verify(list_t* list, ver_info_t ver_info, dump_mode_t mode, const char* fmt, ...) {
+    (void)list;
+    (void)ver_info;
+    (void)mode;
+    (void)fmt;
+    return ERROR_NO;
+}
+
+void list_dump(list_t* list, ver_info_t ver_info, bool is_visual, const char* fmt, ...) {
+    (void)list;
+    (void)ver_info;
+    (void)is_visual;
+    (void)fmt;
+} 
+
+#else
+
 static const double dpi       = 96.0;
 static const double max_w_in  = 750.0 / dpi;
 static const double max_h_in  = 500.0 / dpi;
@@ -210,6 +229,17 @@ error_code list_verify(list_t* list,
     }
 
     if (list->arr && capacity > 0) {
+        if (list->arr[0].val != CANARY_NUM) {
+            LOGGER_ERROR("Left canary corrupted: expected %g, got %g", CANARY_NUM, list->arr[0].val);
+            error_description = "left canary corrupted";
+            error |= ERROR_CANARY;
+        }
+        if (list->arr[capacity].val != CANARY_NUM) {
+            LOGGER_ERROR("Right canary corrupted: expected %g, got %g", CANARY_NUM, list->arr[capacity].val);
+            error_description = "right canary corrupted";
+            error |= ERROR_CANARY;
+        }
+        
         error |= validate_main_chain(list, capacity, &error_description);
         error |= validate_free_chain(list, capacity, &error_description);
         error_description = "Corrupted chain";
@@ -527,6 +557,13 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
     fprintf(html, "line: %d\n",   ver_info_called.line);
 
     if (list && list->arr && list->capacity > 0) {
+        fprintf(html, "\n-- Canaries --\n");
+        fprintf(html, "Expected canary value: %g\n", CANARY_NUM);
+        fprintf(html, "left : %g\n", list->arr[0].val); 
+        fprintf(html, "right: %g\n", list->arr[list->capacity].val);
+    }
+
+    if (list && list->arr && list->capacity > 0) {
         fprintf(html, "\n");
         fprintf(html, "IDX   NEXT   PREV        VALUE     MARKS\n");
         fprintf(html, "----  ------ ------  ------------  -----\n");
@@ -555,6 +592,7 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
     } else {
         fprintf(html, "\n(arr is NULL or capacity == 0)\n");
     }
+
     fprintf(html, "\nSVG: %s\n", svg_path);
     fprintf(html, "</pre>\n");
 
@@ -573,4 +611,5 @@ static void dump_write_html(const list_t* list, ver_info_t ver_info_called, int 
     fprintf(html, "<hr>\n");
 }
 
-//#endif
+// close VERIFY_DEBUG conditional
+#endif /* VERIFY_DEBUG */

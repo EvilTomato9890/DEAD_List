@@ -15,7 +15,7 @@
 <path fill="#e9f2ff" stroke="#6b8fd6" stroke-width="2" d="M12,-203C12,-203 106,-203 106,-203 112,-203 118,-209 118,-215 118,-215 118,-251 118,-251 118,-257 112,-263 106,-263 106,-263 12,-263 12,-263 6,-263 0,-257 0,-251 0,-251 0,-215 0,-215 0,-209 6,-203 12,-203"/>
 <text text-anchor="middle" x="59" y="-250.2" font-family="Fira Mono" font-size="11.00">ind: 0</text>
 <polyline fill="none" stroke="#6b8fd6" stroke-width="2" points="0,-243 118,-243 "/>
-<text text-anchor="middle" x="59" y="-230.2" font-family="Fira Mono" font-size="11.00">val: 10101</text>
+<text text-anchor="middle" x="59" y="-230.2" font-family="Fira Mono" font-size="11.00">val: 3.73593e+09</text>
 <polyline fill="none" stroke="#6b8fd6" stroke-width="2" points="0,-223 118,-223 "/>
 <text text-anchor="middle" x="31" y="-210.2" font-family="Fira Mono" font-size="11.00">prev: 11</text>
 <polyline fill="none" stroke="#6b8fd6" stroke-width="2" points="62,-203 62,-223 "/>
